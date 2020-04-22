@@ -4,8 +4,7 @@
 
 #include <catch2/catch.hpp>
 #include <cinder/Rand.h>
-
-#include <mylibrary/example.h>
+#include <Box2D/Box2D.h>
 
 
 TEST_CASE("Random sanity test", "[random]") {

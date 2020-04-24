@@ -12,6 +12,8 @@
 namespace myapp {
 
 class MyApp : public cinder::app::App {
+
+  const float METERS_TO_POINTS = 100;
  public:
   MyApp();
   void setup() override;
@@ -20,11 +22,15 @@ class MyApp : public cinder::app::App {
   void keyDown(cinder::app::KeyEvent) override;
 
  private:
-  ci::vec2 toCinder( const b2Vec2 &vec );
-  ci::Color toCinder( const b2Color &color );
+  ci::vec2 ToCinder( const b2Vec2 &vec );
+  ci::Color ToCinder( const b2Color &color );
+  void DrawMeteor();
 
 
-  b2Body* groundBody;
+  std::vector<cinder::vec2> vertices;
+  b2World* world_;
+  b2Body* groundBody_;
+  int count = 0;
 };
 
 }  // namespace myapp

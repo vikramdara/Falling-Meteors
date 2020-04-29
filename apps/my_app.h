@@ -6,6 +6,9 @@
 #include <cinder/app/App.h>
 #include <Box2D/Box2D.h>
 #include <cinder/gl/gl.h>
+#include <mylibrary/meteor.h>
+#include <mylibrary/engine.h>
+
 
 
 
@@ -31,6 +34,7 @@ class MyApp : public cinder::app::App {
   b2World* world_;
   b2Body* groundBody_;
   int count = 0;
+  mylibrary::Engine engine_;
 };
 
 }  // namespace myapp

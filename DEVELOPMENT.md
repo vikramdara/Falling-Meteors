@@ -7,3 +7,6 @@ some logic to draw a meteor.
 
 **4/23/2020** Added logic for bodies for ground and meteor.
 Have to add logic for making the meteor fall.
+
+**4/28/2020** Did some object decomposition and added logic
+to parameterize methods. Have to fix bugs.

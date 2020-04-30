@@ -16,24 +16,20 @@ namespace myapp {
 
 class MyApp : public cinder::app::App {
 
-  const float METERS_TO_POINTS = 100;
+  const float METERS_TO_POINTS = 100.0f;
  public:
   MyApp();
   void setup() override;
   void update() override;
   void draw() override;
   void keyDown(cinder::app::KeyEvent) override;
+  void mouseDown( cinder::app::MouseEvent event ) override;
+  void mouseDrag( cinder::app::MouseEvent event ) override;
+  void mouseUp( cinder::app::MouseEvent event ) override;
 
  private:
-  ci::vec2 ToCinder( const b2Vec2 &vec );
-  ci::Color ToCinder( const b2Color &color );
-  void DrawMeteor();
-
-
-  std::vector<cinder::vec2> vertices;
-  b2World* world_;
-  b2Body* groundBody_;
-  int count = 0;
+  void DrawMeteor(mylibrary::Meteor meteor);
+  void DrawGround();
   mylibrary::Engine engine_;
 };
 

@@ -8,10 +8,7 @@ namespace mylibrary {
 
 class Meteor {
  public:
-  explicit Meteor(b2World* world_);
-
-  b2Body* GetMeteorBody();
- private:
+  explicit Meteor();
   b2Body* meteor_body;
 };
 

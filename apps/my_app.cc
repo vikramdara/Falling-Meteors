@@ -15,51 +15,56 @@ MyApp::MyApp() {
 void MyApp::setup() {
   cinder::gl::enableDepthWrite();
   cinder::gl::enableDepthRead();
+  engine_.setup();
 }
 
 void MyApp::update() {
-  engine_.setup();
-  engine_.AddMeteor();
-  float timeStep = 1.0f / 60.f;
-  int32 velocityIterations = 8;
-  int32 positionIterations = 3;
-  world_->Step(timeStep, velocityIterations, positionIterations);
-  count = 0;
-  if (count == 2000) {
-    engine_.reset();
-  }
-  count++;
+  engine_.update();
 }
 
 void MyApp::draw() {
   cinder::gl::clear();
-  cinder::gl::color(1,1,0);
-  cinder::Rectf wall_rect( 0, cinder::app::getWindowHeight() - 100, cinder::app::getWindowWidth(), cinder::app::getWindowHeight());
-  cinder::gl::drawSolidRect(wall_rect);
-  DrawMeteor();
+  DrawGround();
+  for (int x = 0; x < engine_.count; x++) {
+    DrawMeteor(engine_.GetMeteor(x));
+  }
 }
 
-void MyApp::DrawMeteor() {
-  mylibrary::Meteor meteor = engine_.GetMeteor(0);
-  b2Body* meteor_body = meteor.GetMeteorBody();
-  float t = meteor_body->GetAngle();
-  cinder::vec2 position_vector = cinder::vec2(meteor_body->GetPosition().x, meteor_body->GetPosition().y) * METERS_TO_POINTS;
+void MyApp::DrawMeteor(mylibrary::Meteor meteor) {
+  float t = meteor.meteor_body->GetAngle();
+  cinder::vec2 position_vector = cinder::vec2(meteor.meteor_body->GetPosition().x,
+      meteor.meteor_body->GetPosition().y) * METERS_TO_POINTS;
   cinder::gl::ScopedModelMatrix modelScope;
   cinder::gl::translate(position_vector);
-  cinder::gl::rotate( t );
   cinder::gl::color(1,0,0);
-  cinder::gl::drawSolidCircle(position_vector, 20.0f, 20);
+  cinder::gl::drawSolidCircle(position_vector,
+      (meteor.meteor_body->GetFixtureList()->GetShape()->m_radius) * (METERS_TO_POINTS * 2),
+      50);
+}
 
+void MyApp::DrawGround() {
+  cinder::gl::color(0,1,1);
+  cinder::Rectf wall_rect(0,
+                          cinder::app::getWindowHeight() - 100,
+                          cinder::app::getWindowWidth() + 0,
+                          cinder::app::getWindowHeight() + 0);
+  cinder::gl::drawSolidRect(wall_rect);
 }
 
 void MyApp::keyDown(KeyEvent event) { }
 
-
-ci::vec2 MyApp::ToCinder( const b2Vec2 &vec ) {
-  return cinder::vec2( vec.x, vec.y );
+void MyApp::mouseDown( cinder::app::MouseEvent event )
+{
+  engine_.AddMeteor( event.getPos() );
 }
-ci::Color MyApp::ToCinder( const b2Color &color ) {
-  return cinder::Color( color.r, color.g, color.b );
+
+void MyApp::mouseDrag( cinder::app::MouseEvent event )
+{
+  engine_.AddMeteor( event.getPos() );
+}
+
+void MyApp::mouseUp( cinder::app::MouseEvent event )
+{
 }
 
 }

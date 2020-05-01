@@ -11,6 +11,7 @@ namespace mylibrary {
 void Engine::setup() {
   b2Vec2 gravity(0, 10);
   world_ = new b2World(gravity);
+  world_->SetContactListener(this);
   CreateGround();
   CreatePlayer();
   timer.start();
@@ -29,67 +30,34 @@ void Engine::CreateGround() {
 }
 
 void Engine::CreatePlayer() {
-  b2BodyDef user_body;
-  user_body.type = b2_staticBody;
-  user_body.position.Set(pointsToMeters(cinder::app::getWindowWidth() / 2), pointsToMeters(cinder::app::getWindowHeight() - 125));
-  player.player_body = world_->CreateBody(&user_body);
-
-  b2PolygonShape player_center;
-  player_center.SetAsBox(pointsToMeters(25), pointsToMeters(25));
-  player.player_body->CreateFixture(&player_center, 1.0f);
-}
-
-
-ci::vec2 Engine::ToCinder( const b2Vec2 &vec ) {
-  return cinder::vec2( vec.x, vec.y );
-}
-ci::Color Engine::ToCinder( const b2Color &color ) {
-  return cinder::Color( color.r, color.g, color.b );
+  player = new mylibrary::Player(world_);
 }
 
 void Engine::reset() {
+  delete world_;
   meteors.clear();
 }
 
 void Engine::AddMeteor() {
-  cinder::vec2 pos = cinder::vec2(cinder::randFloat(0, cinder::app::getWindowWidth()), cinder::randFloat( -40, -100));
-  cinder::vec2 posScaled = pointsToMeters( pos );
-  Meteor new_meteor;
-  b2BodyDef meteor;
-  meteor.type = b2_dynamicBody;
-  //meteor.allowSleep = false;
-  meteor.position.Set(posScaled.x, posScaled.y);
-  new_meteor.meteor_body = world_->CreateBody(&meteor);
-
-  b2CircleShape shape;
-  shape.m_radius = 0.2f;
-
-  b2FixtureDef fixtureDef;
-  fixtureDef.shape = &shape;
-  fixtureDef.density = 1.0f;
-  fixtureDef.friction = 1.0f;
-  fixtureDef.restitution = 0.4f;
-
-  new_meteor.meteor_body->CreateFixture(&fixtureDef);
-  meteors.push_back(new_meteor);
+  meteors.push_back(new mylibrary::Meteor(world_, 0.2f));
   count++;
 }
 
-Engine::Meteor Engine::GetMeteor(int index) {
+Meteor* Engine::GetMeteor(int index) {
   return meteors[index];
 }
 
-Engine::Player Engine::GetPlayer() {
+mylibrary::Player* Engine::GetPlayer() {
   return player;
 }
 
 void Engine::MovePlayer(Direction direction) {
   switch (direction) {
     case Direction::kRight:
-      player.player_body->SetTransform(b2Vec2(player.player_body->GetPosition().x + 0.125, player.player_body->GetPosition().y), 0);
+      player->player_body->SetTransform(b2Vec2(player->player_body->GetPosition().x + 0.125, player->player_body->GetPosition().y), 0);
       break;
     case Direction::kLeft:
-      player.player_body->SetTransform(b2Vec2(player.player_body->GetPosition().x - 0.125, player.player_body->GetPosition().y), 0);
+      player->player_body->SetTransform(b2Vec2(player->player_body->GetPosition().x - 0.125, player->player_body->GetPosition().y), 0);
       break;
   }
 }
@@ -108,6 +76,21 @@ void Engine::update() {
     AddMeteor();
     timer.stop();
     timer.start();
+  }
+}
+
+void Engine::BeginContact( b2Contact* contact ) {
+  void* body_one = contact->GetFixtureA()->GetBody()->GetUserData();
+  void* body_two = contact->GetFixtureA()->GetBody()->GetUserData();
+
+  const std::type_info& ti1 = typeid(body_one);
+  const std::type_info& ti2 = typeid(body_two);
+  if ((ti1 == ti2) && body_one != nullptr) {
+    has_proper_contact_occured = true;
+  }
+
+  if ((typeid(body_one) == typeid(Player))) {
+    has_proper_contact_occured = true;
   }
 
 }

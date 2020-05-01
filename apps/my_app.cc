@@ -29,17 +29,19 @@ void MyApp::draw() {
     DrawMeteor(engine_.GetMeteor(x));
   }
   DrawPlayer();
+  if (engine_.has_proper_contact_occured) {
+    DrawGameOver();
+  }
 }
 
-void MyApp::DrawMeteor(mylibrary::Engine::Meteor meteor) {
-  float t = meteor.meteor_body->GetAngle();
-  cinder::vec2 position_vector = cinder::vec2(meteor.meteor_body->GetPosition().x,
-      meteor.meteor_body->GetPosition().y) * METERS_TO_POINTS;
+void MyApp::DrawMeteor(mylibrary::Meteor* meteor) {
+  cinder::vec2 position_vector = cinder::vec2(meteor->meteor_body->GetPosition().x,
+      meteor->meteor_body->GetPosition().y) * METERS_TO_POINTS;
   cinder::gl::ScopedModelMatrix modelScope;
   cinder::gl::translate(position_vector);
   cinder::gl::color(1,0,0);
   cinder::gl::drawSolidCircle(position_vector,
-      (meteor.meteor_body->GetFixtureList()->GetShape()->m_radius) * (METERS_TO_POINTS * 2),
+      (meteor->meteor_body->GetFixtureList()->GetShape()->m_radius) * (METERS_TO_POINTS * 2),
       50);
 }
 
@@ -54,14 +56,19 @@ void MyApp::DrawGround() {
 
 void MyApp::DrawPlayer() {
   cinder::gl::color(1,0,1);
-  mylibrary::Engine::Player player = engine_.GetPlayer();
-  cinder::vec2 position_vector = cinder::vec2(player.player_body->GetPosition().x, player.player_body->GetPosition().y) * (METERS_TO_POINTS * 2);
+  mylibrary::Player* player = engine_.GetPlayer();
+  cinder::vec2 position_vector = cinder::vec2(player->player_body->GetPosition().x, player->player_body->GetPosition().y) * (METERS_TO_POINTS * 2);
   cinder::Rectf player_rect(position_vector.x - 25,
       position_vector.y - 25,
       position_vector.x + 25,
       position_vector.y + 25);
   cinder::gl::drawSolidRect(player_rect);
 }
+
+void MyApp::DrawGameOver() {
+  cinder::gl::clear(cinder::Color(0.3, 0.4, 0.5));
+}
+
 
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {

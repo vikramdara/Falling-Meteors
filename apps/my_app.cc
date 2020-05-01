@@ -28,9 +28,10 @@ void MyApp::draw() {
   for (int x = 0; x < engine_.count; x++) {
     DrawMeteor(engine_.GetMeteor(x));
   }
+  DrawPlayer();
 }
 
-void MyApp::DrawMeteor(mylibrary::Meteor meteor) {
+void MyApp::DrawMeteor(mylibrary::Engine::Meteor meteor) {
   float t = meteor.meteor_body->GetAngle();
   cinder::vec2 position_vector = cinder::vec2(meteor.meteor_body->GetPosition().x,
       meteor.meteor_body->GetPosition().y) * METERS_TO_POINTS;
@@ -44,28 +45,40 @@ void MyApp::DrawMeteor(mylibrary::Meteor meteor) {
 
 void MyApp::DrawGround() {
   cinder::gl::color(0,1,1);
-  cinder::Rectf wall_rect(0,
+  cinder::Rectf ground_rect(0,
                           cinder::app::getWindowHeight() - 100,
                           cinder::app::getWindowWidth() + 0,
                           cinder::app::getWindowHeight() + 0);
-  cinder::gl::drawSolidRect(wall_rect);
+  cinder::gl::drawSolidRect(ground_rect);
 }
 
-void MyApp::keyDown(KeyEvent event) { }
-
-void MyApp::mouseDown( cinder::app::MouseEvent event )
-{
-  engine_.AddMeteor( event.getPos() );
+void MyApp::DrawPlayer() {
+  cinder::gl::color(1,0,1);
+  mylibrary::Engine::Player player = engine_.GetPlayer();
+  cinder::vec2 position_vector = cinder::vec2(player.player_body->GetPosition().x, player.player_body->GetPosition().y) * (METERS_TO_POINTS * 2);
+  cinder::Rectf player_rect(position_vector.x - 25,
+      position_vector.y - 25,
+      position_vector.x + 25,
+      position_vector.y + 25);
+  cinder::gl::drawSolidRect(player_rect);
 }
 
-void MyApp::mouseDrag( cinder::app::MouseEvent event )
-{
-  engine_.AddMeteor( event.getPos() );
+void MyApp::keyDown(KeyEvent event) {
+  switch (event.getCode()) {
+    case KeyEvent::KEY_RIGHT:
+      engine_.MovePlayer(mylibrary::Direction::kRight);
+      break;
+    case KeyEvent::KEY_LEFT:
+      engine_.MovePlayer(mylibrary::Direction::kLeft);
+      break;
+  }
 }
 
-void MyApp::mouseUp( cinder::app::MouseEvent event )
-{
-}
+void MyApp::mouseDown( cinder::app::MouseEvent event ) {}
+
+void MyApp::mouseDrag( cinder::app::MouseEvent event ) {}
+
+void MyApp::mouseUp( cinder::app::MouseEvent event ) {}
 
 }
 

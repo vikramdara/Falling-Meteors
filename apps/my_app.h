@@ -6,7 +6,6 @@
 #include <cinder/app/App.h>
 #include <Box2D/Box2D.h>
 #include <cinder/gl/gl.h>
-#include <mylibrary/meteor.h>
 #include <mylibrary/engine.h>
 
 
@@ -28,8 +27,9 @@ class MyApp : public cinder::app::App {
   void mouseUp( cinder::app::MouseEvent event ) override;
 
  private:
-  void DrawMeteor(mylibrary::Meteor meteor);
+  void DrawMeteor(mylibrary::Engine::Meteor meteor);
   void DrawGround();
+  void DrawPlayer();
   mylibrary::Engine engine_;
 };
 

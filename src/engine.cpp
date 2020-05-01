@@ -12,6 +12,8 @@ void Engine::setup() {
   b2Vec2 gravity(0, 10);
   world_ = new b2World(gravity);
   CreateGround();
+  CreatePlayer();
+  timer.start();
 }
 
 
@@ -26,6 +28,16 @@ void Engine::CreateGround() {
   groundBody_->CreateFixture(&groundBox, 1.0f);
 }
 
+void Engine::CreatePlayer() {
+  b2BodyDef user_body;
+  user_body.type = b2_staticBody;
+  user_body.position.Set(pointsToMeters(cinder::app::getWindowWidth() / 2), pointsToMeters(cinder::app::getWindowHeight() - 125));
+  player.player_body = world_->CreateBody(&user_body);
+
+  b2PolygonShape player_center;
+  player_center.SetAsBox(pointsToMeters(25), pointsToMeters(25));
+  player.player_body->CreateFixture(&player_center, 1.0f);
+}
 
 
 ci::vec2 Engine::ToCinder( const b2Vec2 &vec ) {
@@ -39,12 +51,13 @@ void Engine::reset() {
   meteors.clear();
 }
 
-void Engine::AddMeteor(const ci::vec2 &pos) {
+void Engine::AddMeteor() {
+  cinder::vec2 pos = cinder::vec2(cinder::randFloat(0, cinder::app::getWindowWidth()), cinder::randFloat( -40, -100));
+  cinder::vec2 posScaled = pointsToMeters( pos );
   Meteor new_meteor;
   b2BodyDef meteor;
   meteor.type = b2_dynamicBody;
   //meteor.allowSleep = false;
-  cinder::vec2 posScaled = pointsToMeters( pos );
   meteor.position.Set(posScaled.x, posScaled.y);
   new_meteor.meteor_body = world_->CreateBody(&meteor);
 
@@ -62,8 +75,23 @@ void Engine::AddMeteor(const ci::vec2 &pos) {
   count++;
 }
 
-Meteor Engine::GetMeteor(int index) {
+Engine::Meteor Engine::GetMeteor(int index) {
   return meteors[index];
+}
+
+Engine::Player Engine::GetPlayer() {
+  return player;
+}
+
+void Engine::MovePlayer(Direction direction) {
+  switch (direction) {
+    case Direction::kRight:
+      player.player_body->SetTransform(b2Vec2(player.player_body->GetPosition().x + 0.125, player.player_body->GetPosition().y), 0);
+      break;
+    case Direction::kLeft:
+      player.player_body->SetTransform(b2Vec2(player.player_body->GetPosition().x - 0.125, player.player_body->GetPosition().y), 0);
+      break;
+  }
 }
 
 b2World* Engine::GetWorld() {
@@ -75,6 +103,14 @@ void Engine::update() {
   int32 velocityIterations = 8;
   int32 positionIterations = 3;
   world_->Step(timeStep, velocityIterations, positionIterations);
+  size_t time_counter = 2;
+  if (timer.getSeconds() >= time_counter) {
+    AddMeteor();
+    timer.stop();
+    timer.start();
+  }
+
 }
+
 
 }

@@ -25,6 +25,7 @@ void MyApp::update() {
 void MyApp::draw() {
   cinder::gl::clear();
   DrawGround();
+  cinder::gl::pushMatrices();
   for (int x = 0; x < engine_.count; x++) {
     DrawMeteor(engine_.GetMeteor(x));
   }
@@ -32,16 +33,17 @@ void MyApp::draw() {
   if (engine_.has_proper_contact_occured) {
     DrawGameOver();
   }
+  cinder::gl::popMatrices();
 }
 
-void MyApp::DrawMeteor(mylibrary::Meteor* meteor) {
-  cinder::vec2 position_vector = cinder::vec2(meteor->meteor_body->GetPosition().x,
-      meteor->meteor_body->GetPosition().y) * METERS_TO_POINTS;
+void MyApp::DrawMeteor(mylibrary::Meteor meteor) {
+  cinder::vec2 position_vector = cinder::vec2(meteor.meteor_body->GetPosition().x,
+      meteor.meteor_body->GetPosition().y) * METERS_TO_POINTS;
   cinder::gl::ScopedModelMatrix modelScope;
   cinder::gl::translate(position_vector);
   cinder::gl::color(1,0,0);
   cinder::gl::drawSolidCircle(position_vector,
-      (meteor->meteor_body->GetFixtureList()->GetShape()->m_radius) * (METERS_TO_POINTS * 2),
+      (meteor.meteor_body->GetFixtureList()->GetShape()->m_radius) * (METERS_TO_POINTS * 2),
       50);
 }
 

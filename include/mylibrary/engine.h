@@ -8,17 +8,15 @@
 #include <Box2D/Box2D.h>
 #include <cinder/Rand.h>
 #include <cinder/app/App.h>
-#include <vector>
 #include <mylibrary/Meteor.h>
 #include <mylibrary/Player.h>
-#include <typeinfo>
 
 const float METERS_TO_POINTS = 200.0f;
 const float POINTS_TO_METERS = 0.005f;
 
 namespace mylibrary {
 
-enum class Direction { kLeft, kRight};
+enum class Direction {kLeft, kRight};
 
 class Engine : public b2ContactListener {
 
@@ -29,7 +27,6 @@ class Engine : public b2ContactListener {
   void AddMeteor();
   b2World* GetWorld();
   void update();
-  b2Body* groundBody_;
   int count = 0;
   float metersToPoints( float var )			{ return var * METERS_TO_POINTS; }
   cinder::vec2 metersToPoints( const cinder::vec2 &var )	{ return var * METERS_TO_POINTS; }
@@ -38,24 +35,20 @@ class Engine : public b2ContactListener {
   b2Vec2 pointsToMeters( const b2Vec2 &var )	{ return POINTS_TO_METERS * var; }
   void BeginContact( b2Contact* contact ) override;
   bool has_proper_contact_occured = false;
-
-  /**
-  struct Player {
-    b2Body* player_body;
-  };
-   */
-
   void CreatePlayer();
   void MovePlayer(Direction direction);
-  mylibrary::Meteor* GetMeteor(int index);
+  mylibrary::Meteor GetMeteor(int index);
   mylibrary::Player* GetPlayer();
+  void RemoveOffScreenMeteors();
 
 
  private:
   b2World* world_;
-  std::vector<mylibrary::Meteor*> meteors;
+  std::vector<Meteor> meteors;
   cinder::Timer timer;
   mylibrary::Player* player;
+  b2Body* groundBody_;
+
 };
 
 }

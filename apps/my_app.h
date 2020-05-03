@@ -27,7 +27,7 @@ class MyApp : public cinder::app::App {
   void mouseUp( cinder::app::MouseEvent event ) override;
 
  private:
-  void DrawMeteor(mylibrary::Meteor* meteor);
+  void DrawMeteor(mylibrary::Meteor meteor);
   void DrawGround();
   void DrawPlayer();
   void DrawGameOver();

@@ -14,6 +14,7 @@ Player::Player(b2World* world) {
 
   b2PolygonShape player_center;
   player_center.SetAsBox(pointsToMeters(25), pointsToMeters(25));
+  density = 2.0f;
   player_body->CreateFixture(&player_center, 2.0f);
   player_body->SetUserData(this);
 }

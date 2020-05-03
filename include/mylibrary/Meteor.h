@@ -14,8 +14,9 @@
 namespace mylibrary {
 
 class Meteor {
-  const float METERS_TO_POINTS = 200.0f;
-  const float POINTS_TO_METERS = 0.005f;
+
+  static constexpr float METERS_TO_POINTS = 200.0f;
+  static constexpr float POINTS_TO_METERS = 0.005f;
 
  public:
   explicit Meteor(b2World* world, float radius);

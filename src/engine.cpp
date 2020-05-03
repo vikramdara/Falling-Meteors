@@ -39,11 +39,11 @@ void Engine::reset() {
 }
 
 void Engine::AddMeteor() {
-  meteors.push_back(new mylibrary::Meteor(world_, 0.2f));
+  meteors.emplace_back(world_, 0.2f);
   count++;
 }
 
-Meteor* Engine::GetMeteor(int index) {
+Meteor Engine::GetMeteor(int index) {
   return meteors[index];
 }
 
@@ -71,29 +71,75 @@ void Engine::update() {
   int32 velocityIterations = 8;
   int32 positionIterations = 3;
   world_->Step(timeStep, velocityIterations, positionIterations);
-  size_t time_counter = 2;
+  size_t time_counter = 1;
   if (timer.getSeconds() >= time_counter) {
     AddMeteor();
     timer.stop();
     timer.start();
   }
+  RemoveOffScreenMeteors();
+
 }
 
 void Engine::BeginContact( b2Contact* contact ) {
   void* body_one = contact->GetFixtureA()->GetBody()->GetUserData();
-  void* body_two = contact->GetFixtureA()->GetBody()->GetUserData();
+  void* body_two = contact->GetFixtureB()->GetBody()->GetUserData();
 
-  const std::type_info& ti1 = typeid(body_one);
-  const std::type_info& ti2 = typeid(body_two);
-  if ((ti1 == ti2) && body_one != nullptr) {
-    has_proper_contact_occured = true;
+  if (body_one == nullptr || body_two == nullptr) {
+    return;
   }
 
-  if ((typeid(body_one) == typeid(Player))) {
+  if (contact->GetFixtureA()->GetDensity() == 2.0f
+  || contact->GetFixtureB()->GetDensity() == 2.0f) {
     has_proper_contact_occured = true;
   }
+}
+
+void Engine::RemoveOffScreenMeteors() {
+  float window_height_meters = pointsToMeters(cinder::app::getWindowHeight());
+  float window_width_meters = pointsToMeters(cinder::app::getWindowWidth());
+
+  b2Body* node = world_->GetBodyList();
+  while (node)
+  {
+    b2Body* b = node;
+    node = node->GetNext();
+    if (b->GetType() == b2_dynamicBody) {
+      //Meteor* meteor = (Meteor*)b->GetUserData();
+      //b2Body* c = meteor->meteor_body;
+      if (b->GetPosition().x > window_width_meters
+          || b->GetPosition().x < 0) {
+        world_->DestroyBody(b);
+      }
+    }
+  }
+
+
+  meteors.erase(
+      std::remove_if(
+          meteors.begin(),
+          meteors.end(),
+          [window_width_meters](Meteor const & meteor) {
+            return meteor.meteor_body->GetPosition().x > window_width_meters
+            || meteor.meteor_body->GetPosition().x < 0;
+          }
+      ),
+      meteors.end()
+  );
+
+
+  count = world_->GetBodyCount() - 2;
+  /**
+  for (Meteor* meteor : meteors) {
+    if (meteor->meteor_body->GetPosition().x > window_width_meters ||
+    meteor->meteor_body->GetPosition().x < 0) {
+      world_->DestroyBody(meteor->meteor_body);
+      delete meteor;
+    }
+  }
+
+   */
 
 }
 
-
-}
+}  // namespace mylibrary

@@ -34,8 +34,14 @@ void Engine::CreatePlayer() {
 }
 
 void Engine::reset() {
+  world_->DestroyBody(groundBody_);
+  world_->DestroyBody(player->player_body);
   delete world_;
+  delete player;
   meteors.clear();
+  timer.stop();
+  has_proper_contact_occured = false;
+  count = 0;
 }
 
 void Engine::AddMeteor() {
@@ -100,19 +106,19 @@ void Engine::RemoveOffScreenMeteors() {
   float window_width_meters = pointsToMeters(cinder::app::getWindowWidth());
 
   b2Body* node = world_->GetBodyList();
+
   while (node)
   {
     b2Body* b = node;
     node = node->GetNext();
     if (b->GetType() == b2_dynamicBody) {
-      //Meteor* meteor = (Meteor*)b->GetUserData();
-      //b2Body* c = meteor->meteor_body;
       if (b->GetPosition().x > window_width_meters
           || b->GetPosition().x < 0) {
         world_->DestroyBody(b);
       }
     }
   }
+
 
 
   meteors.erase(
@@ -127,19 +133,7 @@ void Engine::RemoveOffScreenMeteors() {
       meteors.end()
   );
 
-
   count = world_->GetBodyCount() - 2;
-  /**
-  for (Meteor* meteor : meteors) {
-    if (meteor->meteor_body->GetPosition().x > window_width_meters ||
-    meteor->meteor_body->GetPosition().x < 0) {
-      world_->DestroyBody(meteor->meteor_body);
-      delete meteor;
-    }
-  }
-
-   */
-
 }
 
 }  // namespace mylibrary

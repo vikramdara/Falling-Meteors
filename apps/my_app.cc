@@ -24,15 +24,17 @@ void MyApp::update() {
 
 void MyApp::draw() {
   cinder::gl::clear();
+  if (engine_.has_proper_contact_occured) {
+    DrawGameOver();
+    DrawReplayButton();
+    return;
+  }
   DrawGround();
   cinder::gl::pushMatrices();
   for (int x = 0; x < engine_.count; x++) {
     DrawMeteor(engine_.GetMeteor(x));
   }
   DrawPlayer();
-  if (engine_.has_proper_contact_occured) {
-    DrawGameOver();
-  }
   cinder::gl::popMatrices();
 }
 
@@ -69,8 +71,52 @@ void MyApp::DrawPlayer() {
 
 void MyApp::DrawGameOver() {
   cinder::gl::clear(cinder::Color(0.3, 0.4, 0.5));
+  const cinder::vec2 center = getWindowCenter();
+  const cinder::ivec2 size = {500, 100};
+  const cinder::Color color = cinder::Color::black();
+
+  auto box = cinder::TextBox()
+      .alignment(cinder::TextBox::CENTER)
+      .font(cinder::Font("Arial", 80))
+      .size(size)
+      .color(color)
+      .backgroundColor(cinder::ColorA(0, 0, 0, 0))
+      .text("Game Over!!");
+
+  const auto box_size = box.getSize();
+  const cinder::vec2 locp = {center.x - box_size.x / 2, center.y - box_size.y / 2};
+  const auto surface = box.render();
+  const auto texture = cinder::gl::Texture::create(surface);
+  cinder::gl::draw(texture, locp);
 }
 
+void MyApp::DrawReplayButton() {
+  const cinder::vec2 center = getWindowCenter();
+  const cinder::ivec2 size = {400, 100};
+  const cinder::Color color = cinder::Color::black();
+
+  auto box = cinder::TextBox()
+      .alignment(cinder::TextBox::CENTER)
+      .font(cinder::Font("Arial", 80))
+      .size(size)
+      .color(color)
+      .backgroundColor(cinder::ColorA(0.4, 0, 0, 1))
+      .text("Replay Game");
+
+  const auto box_size = box.getSize();
+  const cinder::vec2 locp = {center.x - box_size.x / 2, (center.y - box_size.y / 2) + 200};
+  const auto surface = box.render();
+  const auto texture = cinder::gl::Texture::create(surface);
+  cinder::gl::draw(texture, locp);
+}
+
+void MyApp::ReplayGame(cinder::vec2 position) {
+  if ((position.x < 600 || position.x > 200)
+  && (position.y < 650 || position.y > 550)) {
+    engine_.reset();
+    setup();
+  }
+}
 
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
@@ -83,7 +129,11 @@ void MyApp::keyDown(KeyEvent event) {
   }
 }
 
-void MyApp::mouseDown( cinder::app::MouseEvent event ) {}
+void MyApp::mouseDown( cinder::app::MouseEvent event ) {
+  if (engine_.has_proper_contact_occured) {
+    ReplayGame(event.getPos());
+  }
+}
 
 void MyApp::mouseDrag( cinder::app::MouseEvent event ) {}
 

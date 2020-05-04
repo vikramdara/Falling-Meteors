@@ -31,6 +31,8 @@ class MyApp : public cinder::app::App {
   void DrawGround();
   void DrawPlayer();
   void DrawGameOver();
+  void DrawReplayButton();
+  void ReplayGame(cinder::vec2 position);
   mylibrary::Engine engine_;
 };
 

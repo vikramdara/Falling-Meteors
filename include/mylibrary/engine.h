@@ -39,6 +39,7 @@ class Engine : public b2ContactListener {
   void RemoveOffScreenMeteors();
   void SetWave();
   mylibrary::Wave GetWave();
+  bool IsPlayerOnScreenEdge(Direction direction);
 
 
  private:

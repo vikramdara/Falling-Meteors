@@ -9,7 +9,7 @@ namespace mylibrary {
 Meteor::Meteor(b2World* world, float radius, mylibrary::Wave wave, double seconds) {
   cinder::randSeed(std::time(nullptr));
   cinder::vec2 pos = cinder::vec2(cinder::randFloat(200, cinder::app::getWindowWidth() - 200), cinder::randFloat( -40, -100));
-  cinder::vec2 posScaled = mylibrary::Conversions::pointsToMeters( pos );
+  cinder::vec2 posScaled = Conversions::pointsToMeters( pos );
 
   b2BodyDef meteor;
   meteor.type = b2_dynamicBody;
@@ -22,13 +22,13 @@ Meteor::Meteor(b2World* world, float radius, mylibrary::Wave wave, double second
       case 0:
         pos = cinder::vec2(cinder::randFloat(cinder::app::getWindowWidth() + 40, cinder::app::getWindowWidth() + 80),
                            cinder::randFloat( 0, cinder::app::getWindowHeight() / 2));
-        posScaled = mylibrary::Conversions::pointsToMeters( pos );
+        posScaled = Conversions::pointsToMeters( pos );
         meteor.linearVelocity = b2Vec2( cinder::randFloat( -10, -3 ), cinder::randFloat( 0, 3 ) );
         break;
       case 2:
         pos = cinder::vec2(cinder::randFloat(-80, -40),
                            cinder::randFloat( 0, cinder::app::getWindowHeight() / 2));
-        posScaled = mylibrary::Conversions::pointsToMeters( pos );
+        posScaled = Conversions::pointsToMeters( pos );
         meteor.linearVelocity = b2Vec2( cinder::randFloat( 3, 10 ), cinder::randFloat( 0, 3 ) );
         break;
     }

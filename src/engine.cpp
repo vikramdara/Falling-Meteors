@@ -44,7 +44,11 @@ void Engine::CreateBarrier() {
 void Engine::reset() {
   world_->DestroyBody(player->player_body);
   delete player;
-  delete barrier;
+
+  if (current_wave == mylibrary::Wave::kWaveThree
+  || current_wave == mylibrary::Wave::kWaveFour) {
+      delete barrier;
+  }
   delete world_;
   meteors.clear();
   meteor_timer.stop();
@@ -53,6 +57,7 @@ void Engine::reset() {
   has_proper_contact_occured = false;
   is_barrier_made = false;
   has_wave_four_timer_started = false;
+  current_wave = mylibrary::Wave::kWaveOne;
 }
 
 void Engine::AddMeteor(mylibrary::Wave wave) {
@@ -78,12 +83,24 @@ mylibrary::Wave Engine::GetWave() {
 void Engine::MovePlayer(Direction direction) {
   switch (direction) {
     case Direction::kRight:
-      player->player_body->SetTransform(b2Vec2(player->player_body->GetPosition().x + 0.125, player->player_body->GetPosition().y), 0);
+      if (!IsPlayerOnScreenEdge(direction)) {
+          player->player_body->SetTransform(b2Vec2(player->player_body->GetPosition().x + 0.125, player->player_body->GetPosition().y), 0);
+      }
       break;
     case Direction::kLeft:
-      player->player_body->SetTransform(b2Vec2(player->player_body->GetPosition().x - 0.125, player->player_body->GetPosition().y), 0);
+      if (!IsPlayerOnScreenEdge(direction)) {
+          player->player_body->SetTransform(b2Vec2(player->player_body->GetPosition().x - 0.125, player->player_body->GetPosition().y), 0);
+      }
       break;
   }
+}
+
+bool Engine::IsPlayerOnScreenEdge(Direction direction) {
+    if (direction == Direction::kRight) {
+        return (player->player_body->GetPosition().x > Conversions::pointsToMeters(750)) ;
+    } else {
+        return (player->player_body->GetPosition().x < Conversions::pointsToMeters(50));
+    }
 }
 
 b2World* Engine::GetWorld() {
@@ -124,8 +141,8 @@ void Engine::BeginContact( b2Contact* contact ) {
 }
 
 void Engine::RemoveOffScreenMeteors() {
-  float window_height_meters = mylibrary::Conversions::pointsToMeters(cinder::app::getWindowHeight());
-  float window_width_meters = mylibrary::Conversions::pointsToMeters(cinder::app::getWindowWidth());
+  float window_height_meters = Conversions::pointsToMeters(cinder::app::getWindowHeight());
+  float window_width_meters = Conversions::pointsToMeters(cinder::app::getWindowWidth());
 
   b2Body* node = world_->GetBodyList();
 

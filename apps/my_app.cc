@@ -27,7 +27,8 @@ void MyApp::draw() {
     DrawReplayButton();
     return;
   }
-  if (engine_.GetWave() == mylibrary::Wave::kWaveThree) {
+  if (engine_.GetWave() == mylibrary::Wave::kWaveThree
+  || engine_.GetWave() == mylibrary::Wave::kWaveFour) {
     DrawBarrier();
   }
   cinder::gl::pushMatrices();

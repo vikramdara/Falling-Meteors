@@ -16,11 +16,9 @@ namespace mylibrary {
 class Meteor {
 
  public:
-  explicit Meteor(b2World* world, float radius, mylibrary::Wave wave);
+  explicit Meteor(b2World* world, float radius, mylibrary::Wave wave, double seconds);
   ~Meteor();
   b2Body* meteor_body;
-  cinder::Timer timer;
-
 };
 
 }

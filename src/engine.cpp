@@ -14,6 +14,8 @@ void Engine::setup() {
   CreatePlayer();
   meteor_timer.start();
   wave_timer.start();
+  is_barrier_made = false;
+  has_wave_four_timer_started = false;
 }
 /**
 
@@ -40,19 +42,21 @@ void Engine::CreateBarrier() {
 }
 
 void Engine::reset() {
-  //world_->DestroyBody(groundBody_);
   world_->DestroyBody(player->player_body);
   delete player;
+  delete barrier;
   delete world_;
   meteors.clear();
   meteor_timer.stop();
   wave_timer.stop();
+  wave_four_timer.stop();
   has_proper_contact_occured = false;
   is_barrier_made = false;
+  has_wave_four_timer_started = false;
 }
 
 void Engine::AddMeteor(mylibrary::Wave wave) {
-  meteors.emplace_back(world_, 0.2f, wave);
+  meteors.emplace_back(world_, 0.2f, wave, wave_four_timer.getSeconds());
 }
 
 std::vector<Meteor> Engine::GetMeteors() {
@@ -92,9 +96,7 @@ void Engine::update() {
   int32 positionIterations = 3;
   world_->Step(timeStep, velocityIterations, positionIterations);
 
-  double num = wave_timer.getSeconds();
   SetWave();
-
 
   if (meteor_timer.getSeconds() >= time_counter) {
     AddMeteor(current_wave);
@@ -102,7 +104,9 @@ void Engine::update() {
     meteor_timer.start();
   }
 
-  RemoveOffScreenMeteors();
+  if (current_wave != mylibrary::Wave::kWaveFour) {
+    RemoveOffScreenMeteors();
+  }
 }
 
 void Engine::BeginContact( b2Contact* contact ) {
@@ -155,27 +159,35 @@ void Engine::RemoveOffScreenMeteors() {
 
 void Engine::SetWave() {
   int num = static_cast<int>(std::floor(wave_timer.getSeconds()));
-  switch (num / 15) {
+  switch (num / 6) {
     case 0:
       time_counter = 1;
       current_wave = mylibrary::Wave::kWaveOne;
       break;
-    case 1:
-      time_counter = 0.7;
-      current_wave = mylibrary::Wave::kWaveTwo;
 
+    case 1:
+      time_counter = 1;
+      current_wave = mylibrary::Wave::kWaveTwo;
       break;
+
     case 2:
-      time_counter = 0.4;
+      time_counter = 1;
       current_wave = mylibrary::Wave::kWaveThree;
+
       if (!is_barrier_made) {
         CreateBarrier();
       }
       break;
+
     case 3:
+      if (!has_wave_four_timer_started) {
+        wave_four_timer.start();
+        has_wave_four_timer_started = true;
+      }
       time_counter = 0.4;
       current_wave = mylibrary::Wave::kWaveFour;
       break;
+
     default:
       break;
   }

@@ -46,12 +46,13 @@ class Engine : public b2ContactListener {
   std::vector<Meteor> meteors;
   cinder::Timer meteor_timer;
   cinder::Timer wave_timer;
+  cinder::Timer wave_four_timer;
   mylibrary::Player* player;
   mylibrary::Barrier* barrier;
   mylibrary::Wave current_wave = mylibrary::Wave::kWaveOne;
   double time_counter;
-  bool is_barrier_made = false;
-  //b2Body* groundBody_;
+  bool is_barrier_made;
+  bool has_wave_four_timer_started;
 
 };
 

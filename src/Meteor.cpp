@@ -13,7 +13,7 @@ Meteor::Meteor(b2World* world, float radius) {
   meteor.type = b2_dynamicBody;
   meteor.position.Set(posScaled.x, posScaled.y);
   cinder::randSeed(std::time(nullptr));
-  const float velMax = 3;
+  const float velMax = 2;
   meteor.linearVelocity = b2Vec2( cinder::randFloat( -velMax, velMax ), cinder::randFloat( -velMax, 0 ) );
 
   meteor_body = world->CreateBody(&meteor);

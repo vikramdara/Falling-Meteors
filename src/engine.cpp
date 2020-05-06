@@ -12,7 +12,8 @@ void Engine::setup() {
   world_->SetContactListener(this);
   //CreateGround();
   CreatePlayer();
-  timer.start();
+  meteor_timer.start();
+  wave_timer.start();
 }
 /**
 
@@ -33,14 +34,21 @@ void Engine::CreatePlayer() {
   player = new mylibrary::Player(world_);
 }
 
+void Engine::CreateBarrier() {
+  barrier = new mylibrary::Barrier(world_);
+  is_barrier_made = true;
+}
+
 void Engine::reset() {
   //world_->DestroyBody(groundBody_);
   world_->DestroyBody(player->player_body);
-  delete world_;
   delete player;
+  delete world_;
   meteors.clear();
-  timer.stop();
+  meteor_timer.stop();
+  wave_timer.stop();
   has_proper_contact_occured = false;
+  is_barrier_made = false;
 }
 
 void Engine::AddMeteor() {
@@ -53,6 +61,10 @@ std::vector<Meteor> Engine::GetMeteors() {
 
 mylibrary::Player* Engine::GetPlayer() {
   return player;
+}
+
+mylibrary::Barrier* Engine::GetBarrier() {
+  return barrier;
 }
 
 void Engine::MovePlayer(Direction direction) {
@@ -75,13 +87,17 @@ void Engine::update() {
   int32 velocityIterations = 8;
   int32 positionIterations = 3;
   world_->Step(timeStep, velocityIterations, positionIterations);
-  double time_counter = 0.1;
-  if (timer.getSeconds() >= time_counter) {
+
+  double num = wave_timer.getSeconds();
+  SetWave();
+
+
+  if (meteor_timer.getSeconds() >= time_counter) {
     AddMeteor();
-    AddMeteor();
-    timer.stop();
-    timer.start();
+    meteor_timer.stop();
+    meteor_timer.start();
   }
+
   RemoveOffScreenMeteors();
 }
 
@@ -118,8 +134,6 @@ void Engine::RemoveOffScreenMeteors() {
     }
   }
 
-
-
   meteors.erase(
       std::remove_if(
           meteors.begin(),
@@ -133,6 +147,32 @@ void Engine::RemoveOffScreenMeteors() {
       meteors.end()
   );
 
+}
+
+void Engine::SetWave() {
+  int num = static_cast<int>(std::floor(wave_timer.getSeconds()));
+  switch (num / 15) {
+    case 0:
+      time_counter = 1;
+      break;
+    case 1:
+      time_counter = 0.5;
+      break;
+    case 2:
+      time_counter = 0.1;
+      is_user_on_wave_three = true;
+      if (!is_barrier_made) {
+        CreateBarrier();
+      }
+      break;
+    case 3:
+      time_counter = 0.1;
+      break;
+    case 4:
+      break;
+    default:
+      break;
+  }
 }
 
 }  // namespace mylibrary

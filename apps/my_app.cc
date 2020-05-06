@@ -27,7 +27,9 @@ void MyApp::draw() {
     DrawReplayButton();
     return;
   }
-  //DrawGround();
+  if (engine_.is_user_on_wave_three) {
+    DrawBarrier();
+  }
   cinder::gl::pushMatrices();
 
   for (int x = 0; x < engine_.GetMeteors().size(); x++) {
@@ -38,7 +40,7 @@ void MyApp::draw() {
   cinder::gl::popMatrices();
 }
 
-void MyApp::DrawMeteor(mylibrary::Meteor meteor) {
+void MyApp::DrawMeteor(mylibrary::Meteor &meteor) {
   cinder::vec2 position_vector = cinder::vec2(meteor.meteor_body->GetPosition().x,
       meteor.meteor_body->GetPosition().y) *
       kMetersToPointsApp;
@@ -50,13 +52,15 @@ void MyApp::DrawMeteor(mylibrary::Meteor meteor) {
       50);
 }
 
-void MyApp::DrawGround() {
-  cinder::gl::color(0,1,1);
-  cinder::Rectf ground_rect(0,
-                          cinder::app::getWindowHeight() - 100,
-                          cinder::app::getWindowWidth() + 0,
-                          cinder::app::getWindowHeight() + 0);
-  cinder::gl::drawSolidRect(ground_rect);
+void MyApp::DrawBarrier() {
+  cinder::gl::color(1,1,1);
+  mylibrary::Barrier* barrier = engine_.GetBarrier();
+  cinder::vec2 position_vector = cinder::vec2(barrier->barrier_body->GetPosition().x, barrier->barrier_body->GetPosition().y) * (kMetersToPointsApp * 2);
+  cinder::Rectf barrier_rect(position_vector.x - 75,
+                            position_vector.y - 15,
+                            position_vector.x + 75,
+                            position_vector.y + 15);
+  cinder::gl::drawSolidRect(barrier_rect);
 }
 
 void MyApp::DrawPlayer() {

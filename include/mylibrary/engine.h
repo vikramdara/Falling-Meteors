@@ -29,7 +29,7 @@ class Engine : public b2ContactListener {
   b2World* GetWorld();
   void update();
   void BeginContact( b2Contact* contact ) override;
-  bool has_proper_contact_occured = false;
+  bool is_game_over = false;
   void CreatePlayer();
   void CreateBarrier();
   void MovePlayer(Direction direction);

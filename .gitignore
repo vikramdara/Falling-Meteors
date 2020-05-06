@@ -146,3 +146,10 @@ _deps
 # Don't track database files.
 # assets/*.db
 # assets/*.sqlite*
+/assets/player.png
+/assets/transparent_player.png
+/assets/transparent_meteor.png
+/assets/background_transparent.png
+/assets/Cinematic-electronic-track.mp3
+/assets/Retro-game-over-sound-effect.mp3
+/assets/gameover.mp3

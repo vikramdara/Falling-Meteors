@@ -7,6 +7,8 @@
 namespace mylibrary {
 
 Meteor::Meteor(b2World* world, float radius, mylibrary::Wave wave, double seconds) {
+  meteor_texture = cinder::gl::Texture::create(cinder::loadImage(cinder::app::loadAsset("transparent_meteor.png")));
+
   cinder::randSeed(std::time(nullptr));
   cinder::vec2 pos = cinder::vec2(cinder::randFloat(200, cinder::app::getWindowWidth() - 200), cinder::randFloat( -40, -100));
   cinder::vec2 posScaled = Conversions::pointsToMeters( pos );

@@ -40,7 +40,7 @@ void Engine::reset() {
   meteor_timer.stop();
   wave_timer.stop();
   wave_four_timer.stop();
-  has_proper_contact_occured = false;
+  is_game_over = false;
   is_barrier_made = false;
   has_wave_four_timer_started = false;
   current_wave = mylibrary::Wave::kWaveOne;
@@ -122,7 +122,7 @@ void Engine::BeginContact( b2Contact* contact ) {
 
   if (contact->GetFixtureA()->GetDensity() == 2.0f
   || contact->GetFixtureB()->GetDensity() == 2.0f) {
-    has_proper_contact_occured = true;
+    is_game_over = true;
   }
 }
 
@@ -162,7 +162,7 @@ void Engine::RemoveOffScreenMeteors() {
 
 void Engine::SetWave() {
   int num = static_cast<int>(std::floor(wave_timer.getSeconds()));
-  switch (num / 15) {
+  switch (num / 6) {
     case 0:
       time_counter = 1;
       current_wave = mylibrary::Wave::kWaveOne;
@@ -192,6 +192,7 @@ void Engine::SetWave() {
       break;
 
     default:
+      is_game_over = true;
       break;
   }
 }

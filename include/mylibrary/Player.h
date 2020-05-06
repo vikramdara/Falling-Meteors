@@ -6,8 +6,9 @@
 #define FINALPROJECT_MYLIBRARY_PLAYER_H
 
 #include <Box2D/Box2D.h>
-#include <mylibrary/Conversion.h>
 #include <cinder/app/AppBase.h>
+#include <cinder/gl/Texture.h>
+#include <mylibrary/Conversion.h>
 
 namespace mylibrary {
 
@@ -17,6 +18,7 @@ class Player {
   explicit Player(b2World* world);
   ~Player();
   b2Body* player_body;
+  cinder::gl::TextureRef player_texture;
   float density;
 
 };

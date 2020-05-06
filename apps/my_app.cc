@@ -14,6 +14,12 @@ void MyApp::setup() {
   cinder::gl::enableDepthWrite();
   cinder::gl::enableDepthRead();
   engine_.setup();
+  cinder::audio::SourceFileRef sourceFile = cinder::audio::load(cinder::app::loadAsset( "Cinematic-electronic-track.mp3" ));
+  background_music = cinder::audio::Voice::create(sourceFile);
+  background_music->start();
+  cinder::audio::SourceFileRef game_over_file = cinder::audio::load(cinder::app::loadAsset( "gameover.mp3" ));
+  game_over_music = cinder::audio::Voice::create(game_over_file);
+
 }
 
 void MyApp::update() {
@@ -22,9 +28,11 @@ void MyApp::update() {
 
 void MyApp::draw() {
   cinder::gl::clear();
-  if (engine_.has_proper_contact_occured) {
+  cinder::gl::enableAlphaBlending();
+  if (engine_.is_game_over) {
     DrawGameOver();
     DrawReplayButton();
+    background_music->stop();
     return;
   }
   if (engine_.GetWave() == mylibrary::Wave::kWaveThree
@@ -39,19 +47,23 @@ void MyApp::draw() {
 
   DrawPlayer();
   DrawCurrentWave(engine_.GetWave());
+  DrawBackground();
   cinder::gl::popMatrices();
 }
 
 void MyApp::DrawMeteor(mylibrary::Meteor &meteor) {
+  float meteor_radius = meteor.meteor_body->GetFixtureList()->GetShape()->m_radius;
   cinder::vec2 position_vector = cinder::vec2(meteor.meteor_body->GetPosition().x,
       meteor.meteor_body->GetPosition().y) *
       kMetersToPointsApp;
   cinder::gl::ScopedModelMatrix modelScope;
   cinder::gl::translate(position_vector);
-  cinder::gl::color(1,0,0);
-  cinder::gl::drawSolidCircle(position_vector,
-      (meteor.meteor_body->GetFixtureList()->GetShape()->m_radius) * (kMetersToPointsApp * 2),
-      50);
+  cinder::gl::color(cinder::Color::white());
+  cinder::Rectf meteor_rect(position_vector.x - (meteor_radius * (kMetersToPointsApp * 2)),
+                            position_vector.y - (meteor_radius * (kMetersToPointsApp * 2)),
+                            position_vector.x + (meteor_radius * (kMetersToPointsApp * 2)),
+                            position_vector.y + (meteor_radius * (kMetersToPointsApp * 2)));
+  cinder::gl::draw(meteor.meteor_texture, meteor_rect);
 }
 
 void MyApp::DrawBarrier() {
@@ -66,14 +78,21 @@ void MyApp::DrawBarrier() {
 }
 
 void MyApp::DrawPlayer() {
-  cinder::gl::color(1,0,1);
+  cinder::gl::color(cinder::Color::white());
   mylibrary::Player* player = engine_.GetPlayer();
   cinder::vec2 position_vector = cinder::vec2(player->player_body->GetPosition().x, player->player_body->GetPosition().y) * (kMetersToPointsApp * 2);
   cinder::Rectf player_rect(position_vector.x - 25,
       position_vector.y - 25,
       position_vector.x + 25,
       position_vector.y + 25);
-  cinder::gl::drawSolidRect(player_rect);
+  cinder::gl::draw(player->player_texture, player_rect);
+}
+
+void MyApp::DrawBackground() {
+  cinder::gl::color(cinder::Color::white());
+  cinder::gl::TextureRef background = cinder::gl::Texture::create(cinder::loadImage(cinder::app::loadAsset("background_transparent.png")));
+  cinder::Rectf background_rect(0, 0, cinder::app::getWindowWidth(), cinder::app::getWindowHeight());
+  cinder::gl::draw(background, background_rect);
 }
 
 void MyApp::DrawCurrentWave(mylibrary::Wave wave) {
@@ -93,6 +112,7 @@ void MyApp::DrawCurrentWave(mylibrary::Wave wave) {
       break;
   }
 
+  cinder::gl::color(0.23,0.1,0.89);
   const cinder::vec2 center = {50, 50};
   const cinder::ivec2 size = {100, 100};
   const cinder::Color color = cinder::Color::white();
@@ -115,6 +135,7 @@ void MyApp::DrawCurrentWave(mylibrary::Wave wave) {
 }
 
 void MyApp::DrawGameOver() {
+  game_over_music->start();
   cinder::gl::clear(cinder::Color(0.3, 0.4, 0.5));
   const cinder::vec2 center = getWindowCenter();
   const cinder::ivec2 size = {500, 100};
@@ -136,6 +157,7 @@ void MyApp::DrawGameOver() {
 }
 
 void MyApp::DrawReplayButton() {
+  cinder::gl::color(0.23,0.65,0.09);
   const cinder::vec2 center = getWindowCenter();
   const cinder::ivec2 size = {400, 100};
   const cinder::Color color = cinder::Color::black();
@@ -145,7 +167,7 @@ void MyApp::DrawReplayButton() {
       .font(cinder::Font("Arial", 80))
       .size(size)
       .color(color)
-      .backgroundColor(cinder::ColorA(0.4, 0, 0, 1))
+      .backgroundColor(cinder::ColorA(1, 0, 0, 1))
       .text("Replay Game");
 
   const auto box_size = box.getSize();
@@ -158,6 +180,7 @@ void MyApp::DrawReplayButton() {
 void MyApp::ReplayGame(const cinder::vec2& position) {
   if ((position.x < 600 || position.x > 200)
   && (position.y < 650 || position.y > 550)) {
+    game_over_music->stop();
     engine_.reset();
     setup();
   }
@@ -175,7 +198,7 @@ void MyApp::keyDown(KeyEvent event) {
 }
 
 void MyApp::mouseDown( cinder::app::MouseEvent event ) {
-  if (engine_.has_proper_contact_occured) {
+  if (engine_.is_game_over) {
     ReplayGame(event.getPos());
   }
   if ((event.getPos().x / 200) > engine_.GetPlayer()->player_body->GetPosition().x) {

@@ -8,6 +8,7 @@
 #include <cinder/gl/gl.h>
 #include <mylibrary/engine.h>
 #include <cinder/Rand.h>
+#include <cinder/audio/Voice.h>
 
 
 
@@ -33,9 +34,13 @@ class MyApp : public cinder::app::App {
   void DrawPlayer();
   void DrawGameOver();
   void DrawReplayButton();
+  void DrawBackground();
   void ReplayGame(const cinder::vec2& position);
   void DrawCurrentWave(mylibrary::Wave wave);
+
   mylibrary::Engine engine_;
+  cinder::audio::VoiceRef background_music;
+  cinder::audio::VoiceRef game_over_music;
 };
 
 }  // namespace myapp

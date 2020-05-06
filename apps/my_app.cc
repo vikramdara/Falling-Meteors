@@ -135,9 +135,22 @@ void MyApp::mouseDown( cinder::app::MouseEvent event ) {
   if (engine_.has_proper_contact_occured) {
     ReplayGame(event.getPos());
   }
+  if ((event.getPos().x / 200) > engine_.GetPlayer()->player_body->GetPosition().x) {
+    engine_.MovePlayer(mylibrary::Direction::kRight);
+  }
+  if ((event.getPos().x / 200) < engine_.GetPlayer()->player_body->GetPosition().x) {
+    engine_.MovePlayer(mylibrary::Direction::kLeft);
+  }
 }
 
-void MyApp::mouseDrag( cinder::app::MouseEvent event ) {}
+void MyApp::mouseDrag( cinder::app::MouseEvent event ) {
+  if ((event.getPos().x / 200) > engine_.GetPlayer()->player_body->GetPosition().x) {
+    engine_.MovePlayer(mylibrary::Direction::kRight);
+  }
+  if ((event.getPos().x / 200) < engine_.GetPlayer()->player_body->GetPosition().x) {
+    engine_.MovePlayer(mylibrary::Direction::kLeft);
+  }
+}
 
 void MyApp::mouseUp( cinder::app::MouseEvent event ) {}
 

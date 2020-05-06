@@ -46,7 +46,7 @@ class Engine : public b2ContactListener {
   std::vector<Meteor> meteors;
   cinder::Timer timer;
   mylibrary::Player* player;
-  b2Body* groundBody_;
+  //b2Body* groundBody_;
 
 };
 

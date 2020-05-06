@@ -29,11 +29,13 @@ void MyApp::draw() {
     DrawReplayButton();
     return;
   }
-  DrawGround();
+  //DrawGround();
   cinder::gl::pushMatrices();
-  for (int x = 0; x < engine_.count; x++) {
-    DrawMeteor(engine_.GetMeteor(x));
+
+  for (int x = 0; x < engine_.GetMeteors().size(); x++) {
+    DrawMeteor(engine_.GetMeteors()[x]);
   }
+
   DrawPlayer();
   cinder::gl::popMatrices();
 }
@@ -110,7 +112,7 @@ void MyApp::DrawReplayButton() {
   cinder::gl::draw(texture, locp);
 }
 
-void MyApp::ReplayGame(cinder::vec2 position) {
+void MyApp::ReplayGame(const cinder::vec2& position) {
   if ((position.x < 600 || position.x > 200)
   && (position.y < 650 || position.y > 550)) {
     engine_.reset();

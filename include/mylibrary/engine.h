@@ -27,7 +27,6 @@ class Engine : public b2ContactListener {
   void AddMeteor();
   b2World* GetWorld();
   void update();
-  int count = 0;
   float metersToPoints( float var )			{ return var * METERS_TO_POINTS; }
   cinder::vec2 metersToPoints( const cinder::vec2 &var )	{ return var * METERS_TO_POINTS; }
   float pointsToMeters( float var )			{ return var * POINTS_TO_METERS; }
@@ -37,7 +36,7 @@ class Engine : public b2ContactListener {
   bool has_proper_contact_occured = false;
   void CreatePlayer();
   void MovePlayer(Direction direction);
-  mylibrary::Meteor GetMeteor(int index);
+  std::vector<Meteor> GetMeteors();
   mylibrary::Player* GetPlayer();
   void RemoveOffScreenMeteors();
 

@@ -9,12 +9,6 @@
 
 mylibrary::Engine engine_;
 
-TEST_CASE("New meteor", "[AddMeteor]") {
-  engine_.setup();
-  engine_.AddMeteor();
-  REQUIRE(engine_.count == 1);
-}
-
 TEST_CASE("New Player", "[CreatePlayer]") {
   engine_.setup();
   REQUIRE(engine_.GetPlayer()->density == 2.0f);

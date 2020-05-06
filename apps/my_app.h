@@ -32,7 +32,7 @@ class MyApp : public cinder::app::App {
   void DrawPlayer();
   void DrawGameOver();
   void DrawReplayButton();
-  void ReplayGame(cinder::vec2 position);
+  void ReplayGame(const cinder::vec2& position);
   mylibrary::Engine engine_;
 };
 

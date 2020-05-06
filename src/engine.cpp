@@ -12,11 +12,11 @@ void Engine::setup() {
   b2Vec2 gravity(0, 10);
   world_ = new b2World(gravity);
   world_->SetContactListener(this);
-  CreateGround();
+  //CreateGround();
   CreatePlayer();
   timer.start();
 }
-
+/**
 
 void Engine::CreateGround() {
   b2BodyDef groundBodyDef;
@@ -29,28 +29,28 @@ void Engine::CreateGround() {
   groundBody_->CreateFixture(&groundBox, 1.0f);
 }
 
+ */
+
 void Engine::CreatePlayer() {
   player = new mylibrary::Player(world_);
 }
 
 void Engine::reset() {
-  world_->DestroyBody(groundBody_);
+  //world_->DestroyBody(groundBody_);
   world_->DestroyBody(player->player_body);
   delete world_;
   delete player;
   meteors.clear();
   timer.stop();
   has_proper_contact_occured = false;
-  count = 0;
 }
 
 void Engine::AddMeteor() {
   meteors.emplace_back(world_, 0.2f);
-  count++;
 }
 
-Meteor Engine::GetMeteor(int index) {
-  return meteors[index];
+std::vector<Meteor> Engine::GetMeteors() {
+  return meteors;
 }
 
 mylibrary::Player* Engine::GetPlayer() {
@@ -77,14 +77,13 @@ void Engine::update() {
   int32 velocityIterations = 8;
   int32 positionIterations = 3;
   world_->Step(timeStep, velocityIterations, positionIterations);
-  size_t time_counter = 1;
+  double time_counter = 1;
   if (timer.getSeconds() >= time_counter) {
     AddMeteor();
     timer.stop();
     timer.start();
   }
   RemoveOffScreenMeteors();
-
 }
 
 void Engine::BeginContact( b2Contact* contact ) {
@@ -112,8 +111,9 @@ void Engine::RemoveOffScreenMeteors() {
     b2Body* b = node;
     node = node->GetNext();
     if (b->GetType() == b2_dynamicBody) {
-      if (b->GetPosition().x > window_width_meters
-          || b->GetPosition().x < 0) {
+      if (b->GetPosition().x - 0.2f > window_width_meters
+          || b->GetPosition().x + 0.2f < 0
+          || b->GetPosition().y - 0.2f > window_height_meters) {
         world_->DestroyBody(b);
       }
     }
@@ -125,15 +125,15 @@ void Engine::RemoveOffScreenMeteors() {
       std::remove_if(
           meteors.begin(),
           meteors.end(),
-          [window_width_meters](Meteor const & meteor) {
-            return meteor.meteor_body->GetPosition().x > window_width_meters
-            || meteor.meteor_body->GetPosition().x < 0;
+          [window_width_meters, window_height_meters](Meteor const & meteor) {
+            return meteor.meteor_body->GetPosition().x - 0.2f > window_width_meters
+            || meteor.meteor_body->GetPosition().x + 0.2f < 0
+            || meteor.meteor_body->GetPosition().y - 0.2f > window_height_meters;
           }
       ),
       meteors.end()
   );
 
-  count = world_->GetBodyCount() - 2;
 }
 
 }  // namespace mylibrary

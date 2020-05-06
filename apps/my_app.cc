@@ -38,6 +38,7 @@ void MyApp::draw() {
   }
 
   DrawPlayer();
+  DrawCurrentWave(engine_.GetWave());
   cinder::gl::popMatrices();
 }
 
@@ -73,6 +74,44 @@ void MyApp::DrawPlayer() {
       position_vector.x + 25,
       position_vector.y + 25);
   cinder::gl::drawSolidRect(player_rect);
+}
+
+void MyApp::DrawCurrentWave(mylibrary::Wave wave) {
+  std::string current_wave;
+  switch (wave) {
+    case (mylibrary::Wave::kWaveOne):
+      current_wave = "Wave one";
+      break;
+    case (mylibrary::Wave::kWaveTwo):
+      current_wave = "Wave two";
+      break;
+    case (mylibrary::Wave::kWaveThree):
+      current_wave = "Wave three";
+      break;
+    case (mylibrary::Wave::kWaveFour):
+      current_wave = "Wave four";
+      break;
+  }
+
+  const cinder::vec2 center = {50, 50};
+  const cinder::ivec2 size = {100, 100};
+  const cinder::Color color = cinder::Color::white();
+
+  auto box = cinder::TextBox()
+      .alignment(cinder::TextBox::LEFT)
+      .font(cinder::Font("Arial", 40))
+      .size(size)
+      .color(color)
+      .backgroundColor(cinder::ColorA(0, 0.23, 0, 1))
+      .text(current_wave);
+
+  const auto box_size = box.getSize();
+  const cinder::vec2 locp = {center.x - box_size.x / 2, center.y - box_size.y / 2};
+  const auto surface = box.render();
+  const auto texture = cinder::gl::Texture::create(surface);
+  cinder::gl::draw(texture, locp);
+
+
 }
 
 void MyApp::DrawGameOver() {

@@ -17,20 +17,6 @@ void Engine::setup() {
   is_barrier_made = false;
   has_wave_four_timer_started = false;
 }
-/**
-
-void Engine::CreateGround() {
-  b2BodyDef groundBodyDef;
-  groundBodyDef.type = b2_staticBody;
-  groundBodyDef.position.Set(pointsToMeters(cinder::app::getWindowWidth() / 2), pointsToMeters(cinder::app::getWindowHeight() - 50));
-  groundBody_ = world_->CreateBody(&groundBodyDef);
-
-  b2PolygonShape groundBox;
-  groundBox.SetAsBox(pointsToMeters(cinder::app::getWindowWidth() / 2),pointsToMeters(50));
-  groundBody_->CreateFixture(&groundBox, 1.0f);
-}
-
- */
 
 void Engine::CreatePlayer() {
   player = new mylibrary::Player(world_);
@@ -176,19 +162,19 @@ void Engine::RemoveOffScreenMeteors() {
 
 void Engine::SetWave() {
   int num = static_cast<int>(std::floor(wave_timer.getSeconds()));
-  switch (num / 6) {
+  switch (num / 15) {
     case 0:
       time_counter = 1;
       current_wave = mylibrary::Wave::kWaveOne;
       break;
 
     case 1:
-      time_counter = 1;
+      time_counter = 0.7;
       current_wave = mylibrary::Wave::kWaveTwo;
       break;
 
     case 2:
-      time_counter = 1;
+      time_counter = 0.4;
       current_wave = mylibrary::Wave::kWaveThree;
 
       if (!is_barrier_made) {
@@ -201,7 +187,7 @@ void Engine::SetWave() {
         wave_four_timer.start();
         has_wave_four_timer_started = true;
       }
-      time_counter = 0.4;
+      time_counter = 0.2;
       current_wave = mylibrary::Wave::kWaveFour;
       break;
 

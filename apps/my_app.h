@@ -34,6 +34,7 @@ class MyApp : public cinder::app::App {
   void DrawGameOver();
   void DrawReplayButton();
   void ReplayGame(const cinder::vec2& position);
+  void DrawCurrentWave(mylibrary::Wave wave);
   mylibrary::Engine engine_;
 };
 

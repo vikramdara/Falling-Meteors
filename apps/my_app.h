@@ -7,6 +7,7 @@
 #include <Box2D/Box2D.h>
 #include <cinder/gl/gl.h>
 #include <mylibrary/engine.h>
+#include <cinder/Rand.h>
 
 
 
@@ -15,7 +16,7 @@ namespace myapp {
 
 class MyApp : public cinder::app::App {
 
-  const float METERS_TO_POINTS = 100.0f;
+  const float kMetersToPointsApp = 100.0f;
  public:
   MyApp();
   void setup() override;

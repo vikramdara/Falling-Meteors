@@ -2,8 +2,6 @@
 
 #include "my_app.h"
 
-#include <cinder/Rand.h>
-#include <cinder/app/App.h>
 
 namespace myapp {
 
@@ -42,12 +40,13 @@ void MyApp::draw() {
 
 void MyApp::DrawMeteor(mylibrary::Meteor meteor) {
   cinder::vec2 position_vector = cinder::vec2(meteor.meteor_body->GetPosition().x,
-      meteor.meteor_body->GetPosition().y) * METERS_TO_POINTS;
+      meteor.meteor_body->GetPosition().y) *
+      kMetersToPointsApp;
   cinder::gl::ScopedModelMatrix modelScope;
   cinder::gl::translate(position_vector);
   cinder::gl::color(1,0,0);
   cinder::gl::drawSolidCircle(position_vector,
-      (meteor.meteor_body->GetFixtureList()->GetShape()->m_radius) * (METERS_TO_POINTS * 2),
+      (meteor.meteor_body->GetFixtureList()->GetShape()->m_radius) * (kMetersToPointsApp * 2),
       50);
 }
 
@@ -63,7 +62,7 @@ void MyApp::DrawGround() {
 void MyApp::DrawPlayer() {
   cinder::gl::color(1,0,1);
   mylibrary::Player* player = engine_.GetPlayer();
-  cinder::vec2 position_vector = cinder::vec2(player->player_body->GetPosition().x, player->player_body->GetPosition().y) * (METERS_TO_POINTS * 2);
+  cinder::vec2 position_vector = cinder::vec2(player->player_body->GetPosition().x, player->player_body->GetPosition().y) * (kMetersToPointsApp * 2);
   cinder::Rectf player_rect(position_vector.x - 25,
       position_vector.y - 25,
       position_vector.x + 25,

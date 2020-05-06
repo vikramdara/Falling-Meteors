@@ -4,8 +4,6 @@
 
 #include <mylibrary/engine.h>
 
-#include <memory>
-
 namespace mylibrary {
 
 void Engine::setup() {
@@ -77,8 +75,9 @@ void Engine::update() {
   int32 velocityIterations = 8;
   int32 positionIterations = 3;
   world_->Step(timeStep, velocityIterations, positionIterations);
-  double time_counter = 1;
+  double time_counter = 0.1;
   if (timer.getSeconds() >= time_counter) {
+    AddMeteor();
     AddMeteor();
     timer.stop();
     timer.start();
@@ -101,8 +100,8 @@ void Engine::BeginContact( b2Contact* contact ) {
 }
 
 void Engine::RemoveOffScreenMeteors() {
-  float window_height_meters = pointsToMeters(cinder::app::getWindowHeight());
-  float window_width_meters = pointsToMeters(cinder::app::getWindowWidth());
+  float window_height_meters = mylibrary::Conversions::pointsToMeters(cinder::app::getWindowHeight());
+  float window_width_meters = mylibrary::Conversions::pointsToMeters(cinder::app::getWindowWidth());
 
   b2Body* node = world_->GetBodyList();
 

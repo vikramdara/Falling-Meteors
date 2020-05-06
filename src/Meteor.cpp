@@ -6,34 +6,29 @@
 
 namespace mylibrary {
 
-Meteor::Meteor(b2World* world, float radius, mylibrary::Wave wave, double seconds) {
+Meteor::Meteor(b2World* world, const float kRadius, const mylibrary::Wave& kWave, double seconds) {
   meteor_texture = cinder::gl::Texture::create(cinder::loadImage(cinder::app::loadAsset("transparent_meteor.png")));
 
+  const float kCinderRadius = mylibrary::Conversions::MetersToPoints(kRadius);
+  const float kPositionRange = 200;
+  const float kVerticalPositionScale = 2;
+
   cinder::randSeed(std::time(nullptr));
-  cinder::vec2 pos = cinder::vec2(cinder::randFloat(200, cinder::app::getWindowWidth() - 200), cinder::randFloat( -40, -100));
+  cinder::vec2 pos = cinder::vec2(cinder::randFloat(kPositionRange,
+      cinder::app::getWindowWidth() - kPositionRange),
+          cinder::randFloat( -kCinderRadius,
+              -kPositionRange / kVerticalPositionScale));
   cinder::vec2 posScaled = Conversions::pointsToMeters( pos );
 
   b2BodyDef meteor;
   meteor.type = b2_dynamicBody;
 
-  const float velMax = 2;
-  meteor.linearVelocity = b2Vec2( cinder::randFloat( -velMax, velMax ), cinder::randFloat( -velMax, 0 ) );
+  float velocity_maximum = 2;
+  float velocity_minimum = -2;
+  meteor.linearVelocity = b2Vec2( cinder::randFloat(velocity_minimum, velocity_maximum), cinder::randFloat( -velocity_minimum, 0 ) );
 
-  if (wave == mylibrary::Wave::kWaveFour) {
-    switch (static_cast<int>(std::floor(seconds) / 2)) {
-      case 0:
-        pos = cinder::vec2(cinder::randFloat(cinder::app::getWindowWidth() + 40, cinder::app::getWindowWidth() + 80),
-                           cinder::randFloat( 0, cinder::app::getWindowHeight() / 2));
-        posScaled = Conversions::pointsToMeters( pos );
-        meteor.linearVelocity = b2Vec2( cinder::randFloat( -10, -3 ), cinder::randFloat( 0, 3 ) );
-        break;
-      case 2:
-        pos = cinder::vec2(cinder::randFloat(-80, -40),
-                           cinder::randFloat( 0, cinder::app::getWindowHeight() / 2));
-        posScaled = Conversions::pointsToMeters( pos );
-        meteor.linearVelocity = b2Vec2( cinder::randFloat( 3, 10 ), cinder::randFloat( 0, 3 ) );
-        break;
-    }
+  if (kWave == mylibrary::Wave::kWaveFour) {
+    ChangeStartingPointOfMeteor(meteor, kWave, seconds, posScaled, kCinderRadius);
   }
 
   meteor.position.Set(posScaled.x, posScaled.y);
@@ -41,7 +36,7 @@ Meteor::Meteor(b2World* world, float radius, mylibrary::Wave wave, double second
   meteor_body = world->CreateBody(&meteor);
 
   b2CircleShape shape;
-  shape.m_radius = radius;
+  shape.m_radius = kRadius;
 
   b2FixtureDef fixtureDef;
   fixtureDef.shape = &shape;
@@ -53,8 +48,45 @@ Meteor::Meteor(b2World* world, float radius, mylibrary::Wave wave, double second
   meteor_body->SetUserData(this);
 }
 
-Meteor::~Meteor() {
+void Meteor::ChangeStartingPointOfMeteor(b2BodyDef& meteor,
+    const mylibrary::Wave& kWave,
+    double seconds,
+    cinder::vec2& starting_position,
+    const float kCinderRadius) {
+  cinder::randSeed(std::time(nullptr));
 
+  const int kSecondsForPositionChange = 5;
+  const int kScaleRadius = 2;
+  const int kScaleWindow = 2;
+
+  float velocity_maximum;
+  float velocity_minimum;
+
+  cinder::vec2 pos;
+  cinder::vec2 posScaled;
+
+  switch (static_cast<int>(std::floor(seconds) / kSecondsForPositionChange)) {
+    case 0:
+      pos = cinder::vec2(cinder::randFloat(cinder::app::getWindowWidth() + kCinderRadius, cinder::app::getWindowWidth() + kCinderRadius * kScaleRadius),
+                         cinder::randFloat( 0, cinder::app::getWindowHeight() / kScaleWindow));
+      starting_position = Conversions::pointsToMeters( pos );
+
+      velocity_minimum = -10;
+      velocity_maximum = -3;
+      meteor.linearVelocity = b2Vec2( cinder::randFloat(velocity_minimum, velocity_maximum), cinder::randFloat( 0, -velocity_maximum) );
+      break;
+    case 1:
+      return;
+    case 2:
+      pos = cinder::vec2(cinder::randFloat(-kCinderRadius * kScaleRadius, -kCinderRadius),
+                         cinder::randFloat( 0, cinder::app::getWindowHeight() / kScaleWindow));
+      starting_position = Conversions::pointsToMeters( pos );
+
+      velocity_minimum = 3;
+      velocity_maximum = 10;
+      meteor.linearVelocity = b2Vec2( cinder::randFloat(velocity_minimum, velocity_maximum), cinder::randFloat( 0, velocity_minimum) );
+      break;
+  }
 }
 
 }

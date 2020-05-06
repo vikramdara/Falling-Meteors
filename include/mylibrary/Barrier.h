@@ -15,7 +15,12 @@ class Barrier {
 
  public:
   explicit Barrier(b2World* world);
+  ~Barrier();
+
   b2Body* barrier_body;
+  const float kBarrierWidth = 75;
+  const float kBarrierHeight = 15;
+
 
 };
 

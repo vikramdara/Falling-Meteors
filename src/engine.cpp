@@ -6,14 +6,17 @@
 
 namespace mylibrary {
 
-void Engine::setup() {
-  b2Vec2 gravity(0, 10);
+void Engine::Setup() {
+  int gravity_force = 10;
+  b2Vec2 gravity(0, gravity_force);
   world_ = new b2World(gravity);
   world_->SetContactListener(this);
-  //CreateGround();
+
   CreatePlayer();
+
   meteor_timer.start();
   wave_timer.start();
+
   is_barrier_made = false;
   has_wave_four_timer_started = false;
 }
@@ -27,7 +30,7 @@ void Engine::CreateBarrier() {
   is_barrier_made = true;
 }
 
-void Engine::reset() {
+void Engine::Reset() {
   world_->DestroyBody(player->player_body);
   delete player;
 
@@ -35,19 +38,26 @@ void Engine::reset() {
   || current_wave == mylibrary::Wave::kWaveFour) {
       delete barrier;
   }
+
   delete world_;
+
   meteors.clear();
+
   meteor_timer.stop();
   wave_timer.stop();
   wave_four_timer.stop();
+
   is_game_over = false;
   is_barrier_made = false;
   has_wave_four_timer_started = false;
+
   current_wave = mylibrary::Wave::kWaveOne;
 }
 
-void Engine::AddMeteor(mylibrary::Wave wave) {
-  meteors.emplace_back(world_, 0.2f, wave, wave_four_timer.getSeconds());
+void Engine::AddMeteor(const mylibrary::Wave& wave) {
+  const float meteor_radius = 0.2f;
+  meteors.emplace_back(world_, meteor_radius, wave,
+      wave_four_timer.getSeconds());
 }
 
 std::vector<Meteor> Engine::GetMeteors() {
@@ -66,34 +76,45 @@ mylibrary::Wave Engine::GetWave() {
   return current_wave;
 }
 
-void Engine::MovePlayer(Direction direction) {
+bool Engine::GetIsGameOver() {
+  return is_game_over;
+}
+
+void Engine::MovePlayer(const Direction& direction) {
+  const double player_step = 0.125;
+
   switch (direction) {
     case Direction::kRight:
       if (!IsPlayerOnScreenEdge(direction)) {
-          player->player_body->SetTransform(b2Vec2(player->player_body->GetPosition().x + 0.125, player->player_body->GetPosition().y), 0);
+          player->player_body->SetTransform(
+              b2Vec2(player->player_body->
+              GetPosition().x + player_step,
+                  player->player_body->GetPosition().y), 0);
       }
       break;
+
     case Direction::kLeft:
       if (!IsPlayerOnScreenEdge(direction)) {
-          player->player_body->SetTransform(b2Vec2(player->player_body->GetPosition().x - 0.125, player->player_body->GetPosition().y), 0);
+          player->player_body->SetTransform(
+              b2Vec2(player->player_body->
+              GetPosition().x - player_step,
+                  player->player_body->GetPosition().y), 0);
       }
       break;
   }
 }
 
-bool Engine::IsPlayerOnScreenEdge(Direction direction) {
-    if (direction == Direction::kRight) {
-        return (player->player_body->GetPosition().x > Conversions::pointsToMeters(750)) ;
-    } else {
-        return (player->player_body->GetPosition().x < Conversions::pointsToMeters(50));
-    }
+bool Engine::IsPlayerOnScreenEdge(const Direction& direction) {
+  if (direction == Direction::kRight) {
+    return (player->player_body->GetPosition().x >
+            Conversions::pointsToMeters(750));
+  } else {
+    return (player->player_body->GetPosition().x <
+            Conversions::pointsToMeters(50));
+  }
 }
 
-b2World* Engine::GetWorld() {
-  return world_;
-}
-
-void Engine::update() {
+void Engine::Update() {
   float timeStep = 1.0f / 60.0f;
   int32 velocityIterations = 8;
   int32 positionIterations = 3;
@@ -113,6 +134,8 @@ void Engine::update() {
 }
 
 void Engine::BeginContact( b2Contact* contact ) {
+  const float player_density = player->density;
+
   void* body_one = contact->GetFixtureA()->GetBody()->GetUserData();
   void* body_two = contact->GetFixtureB()->GetBody()->GetUserData();
 
@@ -120,15 +143,18 @@ void Engine::BeginContact( b2Contact* contact ) {
     return;
   }
 
-  if (contact->GetFixtureA()->GetDensity() == 2.0f
-  || contact->GetFixtureB()->GetDensity() == 2.0f) {
+  if (contact->GetFixtureA()->GetDensity() == player_density
+  || contact->GetFixtureB()->GetDensity() == player_density) {
     is_game_over = true;
   }
 }
 
 void Engine::RemoveOffScreenMeteors() {
-  float window_height_meters = Conversions::pointsToMeters(cinder::app::getWindowHeight());
-  float window_width_meters = Conversions::pointsToMeters(cinder::app::getWindowWidth());
+  float scaled_height =
+      Conversions::pointsToMeters(cinder::app::getWindowHeight());
+  float scaled_width =
+      Conversions::pointsToMeters(cinder::app::getWindowWidth());
+  const float meteor_radius = 0.2f;
 
   b2Body* node = world_->GetBodyList();
 
@@ -137,9 +163,9 @@ void Engine::RemoveOffScreenMeteors() {
     b2Body* b = node;
     node = node->GetNext();
     if (b->GetType() == b2_dynamicBody) {
-      if (b->GetPosition().x - 0.2f > window_width_meters
-          || b->GetPosition().x + 0.2f < 0
-          || b->GetPosition().y - 0.2f > window_height_meters) {
+      if (b->GetPosition().x - meteor_radius > scaled_width
+      || b->GetPosition().x + meteor_radius < 0
+          || b->GetPosition().y - meteor_radius > scaled_height) {
         world_->DestroyBody(b);
       }
     }
@@ -149,10 +175,13 @@ void Engine::RemoveOffScreenMeteors() {
       std::remove_if(
           meteors.begin(),
           meteors.end(),
-          [window_width_meters, window_height_meters](Meteor const & meteor) {
-            return meteor.meteor_body->GetPosition().x - 0.2f > window_width_meters
-            || meteor.meteor_body->GetPosition().x + 0.2f < 0
-            || meteor.meteor_body->GetPosition().y - 0.2f > window_height_meters;
+          [scaled_width, scaled_height, meteor_radius]
+          (Meteor const & meteor) {
+            return meteor.meteor_body->GetPosition().x
+            - meteor_radius > scaled_width
+            || meteor.meteor_body->GetPosition().x + meteor_radius < 0
+            || meteor.meteor_body->GetPosition().y - meteor_radius >
+                                 scaled_height;
           }
       ),
       meteors.end()
@@ -162,7 +191,8 @@ void Engine::RemoveOffScreenMeteors() {
 
 void Engine::SetWave() {
   int num = static_cast<int>(std::floor(wave_timer.getSeconds()));
-  switch (num / 6) {
+  const int wave_increments = 15;
+  switch (num / wave_increments) {
     case 0:
       time_counter = 1;
       current_wave = mylibrary::Wave::kWaveOne;
@@ -180,6 +210,7 @@ void Engine::SetWave() {
       if (!is_barrier_made) {
         CreateBarrier();
       }
+
       break;
 
     case 3:
@@ -187,6 +218,7 @@ void Engine::SetWave() {
         wave_four_timer.start();
         has_wave_four_timer_started = true;
       }
+
       time_counter = 0.2;
       current_wave = mylibrary::Wave::kWaveFour;
       break;

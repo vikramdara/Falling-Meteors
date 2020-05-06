@@ -26,17 +26,23 @@ class MyApp : public cinder::app::App {
   void keyDown(cinder::app::KeyEvent) override;
   void mouseDown( cinder::app::MouseEvent event ) override;
   void mouseDrag( cinder::app::MouseEvent event ) override;
-  void mouseUp( cinder::app::MouseEvent event ) override;
 
  private:
-  void DrawMeteor(mylibrary::Meteor &meteor);
+  void DrawMeteor(const mylibrary::Meteor& meteor);
   void DrawBarrier();
   void DrawPlayer();
   void DrawGameOver();
   void DrawReplayButton();
   void DrawBackground();
   void ReplayGame(const cinder::vec2& position);
-  void DrawCurrentWave(mylibrary::Wave wave);
+  void DrawCurrentWave(const mylibrary::Wave& wave);
+  void PrintText(const std::string& text,
+      const cinder::Color& color,
+      const cinder::ivec2& size,
+      const cinder::vec2& loc,
+      double color_value,
+      double alpha_value,
+      double font_size);
 
   mylibrary::Engine engine_;
   cinder::audio::VoiceRef background_music;

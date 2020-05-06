@@ -7,20 +7,28 @@
 namespace mylibrary {
 
 Player::Player(b2World* world) {
-  player_texture = cinder::gl::Texture::create(cinder::loadImage(cinder::app::loadAsset("transparent_player.png")));
+  player_texture = cinder::gl::Texture::create(cinder::loadImage(
+      cinder::app::loadAsset("transparent_player.png")));
+
+  const int kWindowScaling = 2;
 
   b2BodyDef user_body;
   user_body.type = b2_staticBody;
-  user_body.position.Set(Conversions::pointsToMeters(cinder::app::getWindowWidth() / 2), Conversions::pointsToMeters(cinder::app::getWindowHeight() - 25));
+  user_body.position.Set(Conversions::pointsToMeters(
+      cinder::app::getWindowWidth() / kWindowScaling),
+      Conversions::pointsToMeters(
+          cinder::app::getWindowHeight() - kPlayerRadius));
+
   player_body = world->CreateBody(&user_body);
 
   b2PolygonShape player_center;
-  player_center.SetAsBox(Conversions::pointsToMeters(25), Conversions::pointsToMeters(25));
+  player_center.SetAsBox(Conversions::pointsToMeters(kPlayerRadius),
+      Conversions::pointsToMeters(kPlayerRadius));
   density = 2.0f;
   player_body->CreateFixture(&player_center, 2.0f);
   player_body->SetUserData(this);
 }
 
-Player::~Player() {}
+Player::~Player() = default;
 
 }

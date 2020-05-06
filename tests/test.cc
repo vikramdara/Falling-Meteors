@@ -14,7 +14,7 @@ TEST_CASE("New Player", "[CreatePlayer]") {
 
 TEST_CASE("New hi", "[CreatePlayer]") {
   mylibrary::Engine engine_;
-  engine_.setup();
+  engine_.Setup();
   REQUIRE(engine_.GetPlayer()->density == 2.0f);
-  engine_.reset();
+  engine_.Reset();
 }

@@ -22,39 +22,43 @@ namespace mylibrary {
 class Engine : public b2ContactListener {
 
  public:
-  void setup();
-  void CreateGround();
-  void reset();
-  void AddMeteor(mylibrary::Wave wave);
-  b2World* GetWorld();
-  void update();
-  void BeginContact( b2Contact* contact ) override;
-  bool is_game_over = false;
-  void CreatePlayer();
-  void CreateBarrier();
-  void MovePlayer(Direction direction);
+  void Setup();
+  void Reset();
+  void Update();
+  void MovePlayer(const Direction& direction);
+
   std::vector<Meteor> GetMeteors();
   mylibrary::Player* GetPlayer();
   mylibrary::Barrier* GetBarrier();
-  void RemoveOffScreenMeteors();
-  void SetWave();
   mylibrary::Wave GetWave();
-  bool IsPlayerOnScreenEdge(Direction direction);
-
+  bool GetIsGameOver();
 
  private:
+  void AddMeteor(const mylibrary::Wave& wave);
+  void BeginContact(b2Contact* contact) override;
+  void CreatePlayer();
+  void CreateBarrier();
+  void RemoveOffScreenMeteors();
+  void SetWave();
+  bool IsPlayerOnScreenEdge(const Direction& direction);
+
+
   b2World* world_;
+  mylibrary::Player* player;
+  mylibrary::Barrier* barrier;
+
   std::vector<Meteor> meteors;
+
   cinder::Timer meteor_timer;
   cinder::Timer wave_timer;
   cinder::Timer wave_four_timer;
-  mylibrary::Player* player;
-  mylibrary::Barrier* barrier;
+
   mylibrary::Wave current_wave = mylibrary::Wave::kWaveOne;
+
   double time_counter;
   bool is_barrier_made;
   bool has_wave_four_timer_started;
-
+  bool is_game_over = false;
 };
 
 }

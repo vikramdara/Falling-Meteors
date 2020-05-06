@@ -9,16 +9,28 @@ namespace mylibrary {
 
 Barrier::Barrier(b2World* world) {
   cinder::randSeed(std::time(nullptr));
-  cinder::vec2 pos = cinder::vec2(cinder::randFloat(75, cinder::app::getWindowWidth() - 75), cinder::randFloat( 550, 650));
+
+  const float kBarrierHeightUpperBound = 550;
+  const float kBarrierHeightLowerBound = 650;
+
+  cinder::vec2 pos = cinder::vec2(
+      cinder::randFloat(
+          kBarrierWidth, cinder::app::getWindowWidth() - kBarrierWidth),
+          cinder::randFloat(
+              kBarrierHeightUpperBound, kBarrierHeightLowerBound));
   cinder::vec2 posScaled = mylibrary::Conversions::pointsToMeters( pos );
+
   b2BodyDef barrier_body_def;
   barrier_body_def.type = b2_staticBody;
   barrier_body_def.position.Set(posScaled.x, posScaled.y);
   barrier_body = world->CreateBody(&barrier_body_def);
 
   b2PolygonShape barrier_box;
-  barrier_box.SetAsBox(mylibrary::Conversions::pointsToMeters(75),mylibrary::Conversions::pointsToMeters(15));
+  barrier_box.SetAsBox(mylibrary::Conversions::pointsToMeters(kBarrierWidth),
+      mylibrary::Conversions::pointsToMeters(kBarrierHeight));
   barrier_body->CreateFixture(&barrier_box, 1.0f);
 }
+
+Barrier::~Barrier() = default;
 
 }

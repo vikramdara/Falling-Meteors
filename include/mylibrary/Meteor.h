@@ -17,10 +17,20 @@ namespace mylibrary {
 class Meteor {
 
  public:
-  explicit Meteor(b2World* world, float radius, mylibrary::Wave wave, double seconds);
-  ~Meteor();
+  explicit Meteor(b2World* world,
+      float radius,
+      const mylibrary::Wave& wave,
+      double seconds);
+
   b2Body* meteor_body;
   cinder::gl::TextureRef meteor_texture;
+
+ private:
+  void ChangeStartingPointOfMeteor(b2BodyDef& meteor,
+      const mylibrary::Wave& kWave,
+      double seconds,
+      cinder::vec2& starting_position,
+      float kCinderRadius);
 };
 
 }

@@ -17,9 +17,11 @@ class Player {
  public:
   explicit Player(b2World* world);
   ~Player();
+
   b2Body* player_body;
   cinder::gl::TextureRef player_texture;
   float density;
+  const float kPlayerRadius = 25;
 
 };
 

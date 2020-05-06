@@ -21,6 +21,6 @@ specific computers. Added logic for meteors falling from random spots in the sky
 and created the sprite and made it move.
 
 **5/1/2020** Working on collision behavior between meteor and player. All code is
-setup, just have to fix some issues regarding contact listeners.
+Setup, just have to fix some issues regarding contact listeners.
 
 **5/1/2020** Fixed bugs collisions effects work fine.

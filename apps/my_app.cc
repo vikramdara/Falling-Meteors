@@ -27,7 +27,7 @@ void MyApp::draw() {
     DrawReplayButton();
     return;
   }
-  if (engine_.is_user_on_wave_three) {
+  if (engine_.GetWave() == mylibrary::Wave::kWaveThree) {
     DrawBarrier();
   }
   cinder::gl::pushMatrices();

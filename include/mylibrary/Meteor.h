@@ -7,19 +7,19 @@
 
 #include <Box2D/Box2D.h>
 #include <cinder/Rand.h>
-#include <mylibrary/Conversion.h>
 #include <cinder/app/AppBase.h>
-
-
+#include <mylibrary/Conversion.h>
+#include <mylibrary/Wave.h>
 
 namespace mylibrary {
 
 class Meteor {
 
  public:
-  explicit Meteor(b2World* world, float radius);
+  explicit Meteor(b2World* world, float radius, mylibrary::Wave wave);
   ~Meteor();
   b2Body* meteor_body;
+  cinder::Timer timer;
 
 };
 

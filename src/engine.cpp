@@ -51,8 +51,8 @@ void Engine::reset() {
   is_barrier_made = false;
 }
 
-void Engine::AddMeteor() {
-  meteors.emplace_back(world_, 0.2f);
+void Engine::AddMeteor(mylibrary::Wave wave) {
+  meteors.emplace_back(world_, 0.2f, wave);
 }
 
 std::vector<Meteor> Engine::GetMeteors() {
@@ -65,6 +65,10 @@ mylibrary::Player* Engine::GetPlayer() {
 
 mylibrary::Barrier* Engine::GetBarrier() {
   return barrier;
+}
+
+mylibrary::Wave Engine::GetWave() {
+  return current_wave;
 }
 
 void Engine::MovePlayer(Direction direction) {
@@ -93,7 +97,7 @@ void Engine::update() {
 
 
   if (meteor_timer.getSeconds() >= time_counter) {
-    AddMeteor();
+    AddMeteor(current_wave);
     meteor_timer.stop();
     meteor_timer.start();
   }
@@ -154,21 +158,23 @@ void Engine::SetWave() {
   switch (num / 15) {
     case 0:
       time_counter = 1;
+      current_wave = mylibrary::Wave::kWaveOne;
       break;
     case 1:
-      time_counter = 0.5;
+      time_counter = 0.7;
+      current_wave = mylibrary::Wave::kWaveTwo;
+
       break;
     case 2:
-      time_counter = 0.1;
-      is_user_on_wave_three = true;
+      time_counter = 0.4;
+      current_wave = mylibrary::Wave::kWaveThree;
       if (!is_barrier_made) {
         CreateBarrier();
       }
       break;
     case 3:
-      time_counter = 0.1;
-      break;
-    case 4:
+      time_counter = 0.4;
+      current_wave = mylibrary::Wave::kWaveFour;
       break;
     default:
       break;

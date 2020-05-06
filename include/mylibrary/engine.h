@@ -11,7 +11,7 @@
 #include <cinder/app/AppBase.h>
 #include <mylibrary/Conversion.h>
 #include <mylibrary/Direction.h>
-#include <mylibrary/Level.h>
+#include <mylibrary/Wave.h>
 #include <mylibrary/Meteor.h>
 #include <mylibrary/Player.h>
 
@@ -25,12 +25,11 @@ class Engine : public b2ContactListener {
   void setup();
   void CreateGround();
   void reset();
-  void AddMeteor();
+  void AddMeteor(mylibrary::Wave wave);
   b2World* GetWorld();
   void update();
   void BeginContact( b2Contact* contact ) override;
   bool has_proper_contact_occured = false;
-  bool is_user_on_wave_three = false;
   void CreatePlayer();
   void CreateBarrier();
   void MovePlayer(Direction direction);
@@ -39,6 +38,7 @@ class Engine : public b2ContactListener {
   mylibrary::Barrier* GetBarrier();
   void RemoveOffScreenMeteors();
   void SetWave();
+  mylibrary::Wave GetWave();
 
 
  private:
@@ -48,7 +48,7 @@ class Engine : public b2ContactListener {
   cinder::Timer wave_timer;
   mylibrary::Player* player;
   mylibrary::Barrier* barrier;
-  mylibrary::Level current_level = mylibrary::Level::kLevelOne;
+  mylibrary::Wave current_wave = mylibrary::Wave::kWaveOne;
   double time_counter;
   bool is_barrier_made = false;
   //b2Body* groundBody_;

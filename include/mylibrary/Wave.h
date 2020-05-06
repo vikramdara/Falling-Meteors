@@ -7,7 +7,7 @@
 
 namespace mylibrary {
 
-enum class Level {kLevelOne, kLevelTwo, kLevelThree, kLevelFour, kLevelFive};
+enum class Wave {kWaveOne, kWaveTwo, kWaveThree, kWaveFour};
 
 }
 

@@ -6,7 +6,7 @@
 
 namespace mylibrary {
 
-Meteor::Meteor(b2World* world, float radius) {
+Meteor::Meteor(b2World* world, float radius, mylibrary::Wave wave) {
   cinder::vec2 pos = cinder::vec2(cinder::randFloat(200, cinder::app::getWindowWidth() - 200), cinder::randFloat( -40, -100));
   cinder::vec2 posScaled = mylibrary::Conversions::pointsToMeters( pos );
   b2BodyDef meteor;

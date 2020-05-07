@@ -88,6 +88,14 @@ bool Engine::GetIsGameOver() {
   return is_game_over;
 }
 
+double Engine::GetRateOfMeteorDrops() const {
+  return rate_of_meteor_drops;
+}
+
+bool Engine::GetIsBarrierMade() const {
+  return is_barrier_made;
+}
+
 void Engine::MovePlayer(const Direction& direction) {
   const double player_step = 0.125;
 
@@ -239,7 +247,6 @@ void Engine::SetWave(int seconds_passed) {
       break;
   }
 }
-double Engine::GetRateOfMeteorDrops() const { return rate_of_meteor_drops; }
-bool Engine::GetIsBarrierMade() const { return is_barrier_made; }
+
 
 }  // namespace mylibrary

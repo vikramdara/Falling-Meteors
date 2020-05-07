@@ -63,10 +63,12 @@ void MyApp::draw() {
 void MyApp::DrawMeteor(const mylibrary::Meteor& meteor) {
   float meteor_radius =
       meteor.meteor_body->GetFixtureList()->GetShape()->m_radius;
+  const int kMeteorRadiusScale = 2;
   cinder::vec2 meteor_vector =
       cinder::vec2(meteor.meteor_body->GetPosition().x,
                    meteor.meteor_body->GetPosition().y) *
-                   (mylibrary::Conversions::kMetersToPoints / 2);
+                   (mylibrary::Conversions::kMetersToPoints /
+                   kMeteorRadiusScale);
 
   cinder::gl::ScopedModelMatrix model_scope;
   cinder::gl::translate(meteor_vector);
@@ -94,10 +96,10 @@ void MyApp::DrawBarrier() {
                    barrier->barrier_body->GetPosition().y) *
       (kMetersToPointsApp * 2);
 
-  cinder::Rectf barrier_rect(position_vector.x - 75,
-                             position_vector.y - 15,
-                             position_vector.x + 75,
-                             position_vector.y + 15);
+  cinder::Rectf barrier_rect(position_vector.x - barrier->kBarrierWidth,
+                             position_vector.y - barrier->kBarrierHeight,
+                             position_vector.x + barrier->kBarrierWidth,
+                             position_vector.y + barrier->kBarrierHeight);
 
   cinder::gl::drawSolidRect(barrier_rect);
 }
@@ -111,10 +113,10 @@ void MyApp::DrawPlayer() {
                    player->player_body->GetPosition().y) *
       (kMetersToPointsApp * 2);
 
-  cinder::Rectf player_rect(position_vector.x - 25,
-                            position_vector.y - 25,
-                            position_vector.x + 25,
-                            position_vector.y + 25);
+  cinder::Rectf player_rect(position_vector.x - player->kPlayerRadius,
+                            position_vector.y - player->kPlayerRadius,
+                            position_vector.x + player->kPlayerRadius,
+                            position_vector.y + player->kPlayerRadius);
 
   cinder::gl::draw(player->GetPlayerTexture(), player_rect);
 }

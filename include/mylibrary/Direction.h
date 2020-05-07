@@ -7,6 +7,7 @@
 
 namespace mylibrary {
 
+/** Represents the directions a player can go */
 enum class Direction {kLeft, kRight};
 
 } // namespace snake

@@ -19,6 +19,7 @@ void Engine::Setup() {
 
   is_barrier_made = false;
   has_wave_four_timer_started = false;
+  current_wave = mylibrary::Wave::kWaveOne;
 }
 
 void Engine::CreatePlayer() {
@@ -107,10 +108,10 @@ void Engine::MovePlayer(const Direction& direction) {
 bool Engine::IsPlayerOnScreenEdge(const Direction& direction) {
   if (direction == Direction::kRight) {
     return (player->player_body->GetPosition().x >
-            Conversions::pointsToMeters(750));
+            Conversions::PointsToMeters(750));
   } else {
     return (player->player_body->GetPosition().x <
-            Conversions::pointsToMeters(50));
+            Conversions::PointsToMeters(50));
   }
 }
 
@@ -122,7 +123,7 @@ void Engine::Update() {
 
   SetWave();
 
-  if (meteor_timer.getSeconds() >= time_counter) {
+  if (meteor_timer.getSeconds() >= rate_of_meteor_drops) {
     AddMeteor(current_wave);
     meteor_timer.stop();
     meteor_timer.start();
@@ -151,9 +152,9 @@ void Engine::BeginContact( b2Contact* contact ) {
 
 void Engine::RemoveOffScreenMeteors() {
   float scaled_height =
-      Conversions::pointsToMeters(cinder::app::getWindowHeight());
+      Conversions::PointsToMeters(cinder::app::getWindowHeight());
   float scaled_width =
-      Conversions::pointsToMeters(cinder::app::getWindowWidth());
+      Conversions::PointsToMeters(cinder::app::getWindowWidth());
   const float meteor_radius = 0.2f;
 
   b2Body* node = world_->GetBodyList();
@@ -194,17 +195,17 @@ void Engine::SetWave() {
   const int wave_increments = 15;
   switch (num / wave_increments) {
     case 0:
-      time_counter = 1;
+      rate_of_meteor_drops = 1;
       current_wave = mylibrary::Wave::kWaveOne;
       break;
 
     case 1:
-      time_counter = 0.7;
+      rate_of_meteor_drops = 0.7;
       current_wave = mylibrary::Wave::kWaveTwo;
       break;
 
     case 2:
-      time_counter = 0.4;
+      rate_of_meteor_drops = 0.4;
       current_wave = mylibrary::Wave::kWaveThree;
 
       if (!is_barrier_made) {
@@ -219,7 +220,7 @@ void Engine::SetWave() {
         has_wave_four_timer_started = true;
       }
 
-      time_counter = 0.2;
+      rate_of_meteor_drops = 0.2;
       current_wave = mylibrary::Wave::kWaveFour;
       break;
 

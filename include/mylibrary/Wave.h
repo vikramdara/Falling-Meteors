@@ -7,6 +7,7 @@
 
 namespace mylibrary {
 
+/** Represents the wave the player in on during the game */
 enum class Wave {kWaveOne, kWaveTwo, kWaveThree, kWaveFour};
 
 }

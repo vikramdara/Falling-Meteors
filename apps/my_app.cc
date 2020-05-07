@@ -63,7 +63,7 @@ void MyApp::DrawMeteor(const mylibrary::Meteor& meteor) {
   cinder::vec2 meteor_vector =
       cinder::vec2(meteor.meteor_body->GetPosition().x,
                    meteor.meteor_body->GetPosition().y) *
-                   (mylibrary::Conversions::METERS_TO_POINTS / 2);
+                   (mylibrary::Conversions::kMetersToPoints / 2);
 
   cinder::gl::ScopedModelMatrix model_scope;
   cinder::gl::translate(meteor_vector);
@@ -71,13 +71,13 @@ void MyApp::DrawMeteor(const mylibrary::Meteor& meteor) {
 
   cinder::Rectf meteor_rect(
       meteor_vector.x - (meteor_radius *
-      (mylibrary::Conversions::METERS_TO_POINTS)),
+      (mylibrary::Conversions::kMetersToPoints)),
       meteor_vector.y - (meteor_radius *
-      (mylibrary::Conversions::METERS_TO_POINTS)),
+      (mylibrary::Conversions::kMetersToPoints)),
       meteor_vector.x + (meteor_radius *
-      (mylibrary::Conversions::METERS_TO_POINTS)),
+      (mylibrary::Conversions::kMetersToPoints)),
       meteor_vector.y + (meteor_radius *
-      (mylibrary::Conversions::METERS_TO_POINTS)));
+      (mylibrary::Conversions::kMetersToPoints)));
 
   cinder::gl::draw(meteor.meteor_texture, meteor_rect);
 }

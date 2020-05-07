@@ -14,14 +14,24 @@ namespace mylibrary {
 class Conversions {
 
  public:
-  constexpr static const float METERS_TO_POINTS = 200.0f;
-  constexpr static float POINTS_TO_METERS = 0.005f;
+  /**
+   * These 2 constants represent the factor that is to scale the cinder
+   * and box2d coordinates together
+   */
+  constexpr static const float kMetersToPoints = 200.0f;
+  constexpr static float kPointsToMeters = 0.005f;
 
-  static float MetersToPoints( float var )			{ return var * METERS_TO_POINTS; }
-  static cinder::vec2 metersToPoints( const cinder::vec2 &var )	{ return var * METERS_TO_POINTS; }
-  static float pointsToMeters( float var )			{ return var * POINTS_TO_METERS; }
-  static cinder::vec2 pointsToMeters( const cinder::vec2 &var )	{ return var * POINTS_TO_METERS; }
-  static b2Vec2 pointsToMeters( const b2Vec2 &var )	{ return POINTS_TO_METERS * var; }
+  constexpr static float kWindowWidth = 800.0f;
+  constexpr static float kWindowHeight = 800.0f;
+
+  /**
+   * These methods either take in a vector or float and
+   * convert it to either cinder or box2d coordinates
+   * @return the converted float or vector
+   */
+  static float MetersToPoints( float var )			{ return var * kMetersToPoints; }
+  static float PointsToMeters( float var )			{ return var * kPointsToMeters; }
+  static cinder::vec2 PointsToMeters( const cinder::vec2 &var )	{ return var * kPointsToMeters; }
 };
 
 

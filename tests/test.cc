@@ -9,7 +9,7 @@
 
 
 TEST_CASE("New Player", "[CreatePlayer]") {
-
+  mylibrary::Engine engine_;
 }
 
 TEST_CASE("New hi", "[CreatePlayer]") {

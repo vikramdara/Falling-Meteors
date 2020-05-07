@@ -13,12 +13,11 @@ Meteor::Meteor(b2World* world, const float kRadius, const mylibrary::Wave& kWave
   const float kPositionRange = 200;
   const float kVerticalPositionScale = 2;
 
-  cinder::randSeed(std::time(nullptr));
   cinder::vec2 pos = cinder::vec2(cinder::randFloat(kPositionRange,
       cinder::app::getWindowWidth() - kPositionRange),
           cinder::randFloat( -kCinderRadius,
               -kPositionRange / kVerticalPositionScale));
-  cinder::vec2 posScaled = Conversions::pointsToMeters( pos );
+  cinder::vec2 posScaled = Conversions::PointsToMeters(pos);
 
   b2BodyDef meteor;
   meteor.type = b2_dynamicBody;
@@ -53,7 +52,6 @@ void Meteor::ChangeStartingPointOfMeteor(b2BodyDef& meteor,
     double seconds,
     cinder::vec2& starting_position,
     const float kCinderRadius) {
-  cinder::randSeed(std::time(nullptr));
 
   const int kSecondsForPositionChange = 5;
   const int kScaleRadius = 2;
@@ -69,7 +67,7 @@ void Meteor::ChangeStartingPointOfMeteor(b2BodyDef& meteor,
     case 0:
       pos = cinder::vec2(cinder::randFloat(cinder::app::getWindowWidth() + kCinderRadius, cinder::app::getWindowWidth() + kCinderRadius * kScaleRadius),
                          cinder::randFloat( 0, cinder::app::getWindowHeight() / kScaleWindow));
-      starting_position = Conversions::pointsToMeters( pos );
+      starting_position = Conversions::PointsToMeters(pos);
 
       velocity_minimum = -10;
       velocity_maximum = -3;
@@ -80,7 +78,7 @@ void Meteor::ChangeStartingPointOfMeteor(b2BodyDef& meteor,
     case 2:
       pos = cinder::vec2(cinder::randFloat(-kCinderRadius * kScaleRadius, -kCinderRadius),
                          cinder::randFloat( 0, cinder::app::getWindowHeight() / kScaleWindow));
-      starting_position = Conversions::pointsToMeters( pos );
+      starting_position = Conversions::PointsToMeters(pos);
 
       velocity_minimum = 3;
       velocity_maximum = 10;

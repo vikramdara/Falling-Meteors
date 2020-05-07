@@ -18,7 +18,7 @@ Barrier::Barrier(b2World* world) {
           kBarrierWidth, cinder::app::getWindowWidth() - kBarrierWidth),
           cinder::randFloat(
               kBarrierHeightUpperBound, kBarrierHeightLowerBound));
-  cinder::vec2 posScaled = mylibrary::Conversions::pointsToMeters( pos );
+  cinder::vec2 posScaled = mylibrary::Conversions::PointsToMeters(pos);
 
   b2BodyDef barrier_body_def;
   barrier_body_def.type = b2_staticBody;
@@ -26,8 +26,8 @@ Barrier::Barrier(b2World* world) {
   barrier_body = world->CreateBody(&barrier_body_def);
 
   b2PolygonShape barrier_box;
-  barrier_box.SetAsBox(mylibrary::Conversions::pointsToMeters(kBarrierWidth),
-      mylibrary::Conversions::pointsToMeters(kBarrierHeight));
+  barrier_box.SetAsBox(mylibrary::Conversions::PointsToMeters(kBarrierWidth),
+                       mylibrary::Conversions::PointsToMeters(kBarrierHeight));
   barrier_body->CreateFixture(&barrier_box, 1.0f);
 }
 

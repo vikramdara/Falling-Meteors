@@ -18,6 +18,9 @@ layout.
 * Has four different waves where each consecutive wave is more difficult than the last
 * Each wave lasts for 15 seconds and you must survive the full minute!
 
+<img src = "assets/MiddleGame.png" width = "500" height = "500">
+
+
 **Getting Started**
 -
 

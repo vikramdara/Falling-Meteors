@@ -94,7 +94,7 @@ void MyApp::DrawBarrier() {
   cinder::vec2 position_vector =
       cinder::vec2(barrier->barrier_body->GetPosition().x,
                    barrier->barrier_body->GetPosition().y) *
-      (kMetersToPointsApp * 2);
+      (mylibrary::Conversions::kMetersToPoints);
 
   cinder::Rectf barrier_rect(position_vector.x - barrier->kBarrierWidth,
                              position_vector.y - barrier->kBarrierHeight,
@@ -111,7 +111,7 @@ void MyApp::DrawPlayer() {
   cinder::vec2 position_vector =
       cinder::vec2(player->player_body->GetPosition().x,
                    player->player_body->GetPosition().y) *
-      (kMetersToPointsApp * 2);
+      (mylibrary::Conversions::kMetersToPoints);
 
   cinder::Rectf player_rect(position_vector.x - player->kPlayerRadius,
                             position_vector.y - player->kPlayerRadius,
@@ -213,8 +213,15 @@ void MyApp::PrintText(const std::string& text,
 }
 
 void MyApp::ReplayGame(const cinder::vec2& position) {
-  if ((position.x < 600 || position.x > 200) &&
-      (position.y < 650 || position.y > 550)) {
+  const int kReplayButtonRightSide = 600;
+  const int kReplayButtonLeftSide = 200;
+  const int kReplayButtonTopSide = 550;
+  const int kReplayButtonBottomSide = 650;
+
+  if ((position.x < kReplayButtonRightSide ||
+  position.x > kReplayButtonLeftSide) &&
+      (position.y < kReplayButtonTopSide ||
+      position.y > kReplayButtonBottomSide)) {
     game_over_music->stop();
     engine_.Reset();
     setup();
@@ -238,24 +245,24 @@ void MyApp::mouseDown(cinder::app::MouseEvent event) {
     ReplayGame(event.getPos());
   }
 
-  if ((event.getPos().x / 200) >
+  if ((event.getPos().x * mylibrary::Conversions::kPointsToMeters) >
       engine_.GetPlayer()->player_body->GetPosition().x) {
     engine_.MovePlayer(mylibrary::Direction::kRight);
   }
 
-  if ((event.getPos().x / 200) <
+  if ((event.getPos().x * mylibrary::Conversions::kPointsToMeters) <
       engine_.GetPlayer()->player_body->GetPosition().x) {
     engine_.MovePlayer(mylibrary::Direction::kLeft);
   }
 }
 
 void MyApp::mouseDrag(cinder::app::MouseEvent event) {
-  if ((event.getPos().x / 200) >
+  if ((event.getPos().x * mylibrary::Conversions::kPointsToMeters) >
       engine_.GetPlayer()->player_body->GetPosition().x) {
     engine_.MovePlayer(mylibrary::Direction::kRight);
   }
 
-  if ((event.getPos().x / 200) <
+  if ((event.getPos().x * mylibrary::Conversions::kPointsToMeters) <
       engine_.GetPlayer()->player_body->GetPosition().x) {
     engine_.MovePlayer(mylibrary::Direction::kLeft);
   }

@@ -17,7 +17,6 @@ namespace myapp {
 
 class MyApp : public cinder::app::App {
 
-  const float kMetersToPointsApp = 100.0f;
  public:
   MyApp();
   /**

@@ -47,3 +47,5 @@ to make the game a lot more appealing.
 **5/6/2020** Refactors some code to make it more testable. Added tests
 
 **5/6/2020** Finished ReadMe.md
+
+**5/6/2020** Fixed last minute documentation issues and magic number issues

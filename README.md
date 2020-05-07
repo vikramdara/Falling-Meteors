@@ -8,4 +8,7 @@ layout.
 
 **Author**: Vikram Dara - [`vdara2@illinois.edu`](mailto:vdara2@illinois.edu)
 
-#Falling Meteors
+##Falling Meteors
+* This is a game where a user has to dodge meteors
+* Has four different waves where each consecutive wave is more difficult than the last
+* Each wave lasts for 15 seconds and you must survive the full minute!

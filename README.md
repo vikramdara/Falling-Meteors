@@ -27,7 +27,7 @@ layout.
 * This game is a CMake project so it is necessary to be installed
 * Cinder is also necessary to be installed
     * The Cinder library which can be downloaded [here](https://libcinder.org/download)
-    * If you are a Windows user download Visual Studio 2015, or get the 0.9.3 version of cinder and download Visual Studio 2019
+    * If you are a Windows user download [Visual Studio 2015](https://visualstudio.microsoft.com/vs/older-downloads/), or get the 0.9.3 version of cinder and download [Visual Studio 2019](https://visualstudio.microsoft.com/downloads/)
     * Once you download it, extract the zip and then open the folder in your IDE, and finally click the build button
     * Add a new directory of any name and add a new directory in that. Then clone code into that subdirectory.
     
@@ -41,4 +41,8 @@ layout.
            SOURCES     ${SOURCE_LIST}
            LIBRARIES   mylibrary
            BLOCKS Box2D <------ Just type this!
-       )
+    ```
+**Remarks**
+-
+
+* All that is left is for you to play the game and enjoy!  

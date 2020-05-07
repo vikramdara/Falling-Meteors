@@ -26,14 +26,24 @@ class Player {
    */
   ~Player();
 
+  /**
+   * This method sets the player texture to the file path given
+   * @param texture_file_path the file path that contains
+   * the image of the player
+   */
   void SetPlayerTexture(const std::string& texture_file_path);
+
+  /**
+   * This method is used to get the player texture
+   * @return the player texture
+   */
+  const cinder::gl::TextureRef& GetPlayerTexture() const;
 
   /**
    * This is the body that all box2d mechanics will take place in.
    */
   b2Body* player_body;
 
-  const cinder::gl::TextureRef& GetPlayerTexture() const;
 
   /**
    * Density of the player object

@@ -36,6 +36,8 @@ class Engine : public b2ContactListener {
 
   /**
    * Update method updates the game by 1/60 of a second
+   * @param meteor_texture this is the texture that the meteor body needs to be
+   * set to.
    */
   void Update(const std::string& meteor_texture);
 
@@ -47,13 +49,15 @@ class Engine : public b2ContactListener {
 
   /**
    * This method sets the current wave depending on how much time has passed
+   * @param seconds_passed is the number of seconds passed since wave_timer has
+   * been started
    */
   void SetWave(int seconds_passed);
 
   void MovePlayer(const Direction& direction);
 
   /**
-   * These next 5 methods all return the private global variables
+   * These next 8 methods all return the private global variables
    */
   std::vector<Meteor> GetMeteors();
   mylibrary::Player* GetPlayer();
@@ -70,6 +74,7 @@ class Engine : public b2ContactListener {
    * This method adds a meteor to the game
    * @param wave is the current wave we are in used to determine the starting
    * position of the meteor
+   * @param meteor_texture is the texture for the meteor that needs to be set
    */
   void AddMeteor(const mylibrary::Wave& wave, const std::string& meteor_texture);
 

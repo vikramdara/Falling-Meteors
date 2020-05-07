@@ -30,7 +30,18 @@ class Meteor {
       const mylibrary::Wave& wave,
       double seconds);
 
+  /**
+   * This method sets the meteor texture to the file path given
+   * @param texture_file_path the file path that contains
+   * the image of the meteor
+   */
   void SetMeteorTexture(const std::string& texture_file_path);
+
+  /**
+   * This method is used to get the meteor texture
+   * @return the meteor texture
+   */
+  const cinder::gl::TextureRef& GetMeteorTexture() const;
 
 
   /**
@@ -38,7 +49,6 @@ class Meteor {
    */
   b2Body* meteor_body;
 
-  const cinder::gl::TextureRef& GetMeteorTexture() const;
 
  private:
   /**

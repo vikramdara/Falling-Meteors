@@ -55,10 +55,13 @@ void Engine::Reset() {
   current_wave = mylibrary::Wave::kWaveOne;
 }
 
-void Engine::AddMeteor(const mylibrary::Wave& wave) {
+void Engine::AddMeteor(const mylibrary::Wave& wave,
+    const std::string& meteor_texture) {
+
   const float meteor_radius = 0.2f;
-  meteors.emplace_back(world_, meteor_radius, wave,
-      wave_four_timer.getSeconds());
+  Meteor meteor(world_, meteor_radius, wave, wave_four_timer.getSeconds());
+  meteor.SetMeteorTexture(meteor_texture);
+  meteors.push_back(meteor);
 }
 
 std::vector<Meteor> Engine::GetMeteors() {
@@ -75,6 +78,10 @@ mylibrary::Barrier* Engine::GetBarrier() {
 
 mylibrary::Wave Engine::GetWave() {
   return current_wave;
+}
+
+b2World* Engine::GetWorld() const {
+  return world_;
 }
 
 bool Engine::GetIsGameOver() {
@@ -106,25 +113,29 @@ void Engine::MovePlayer(const Direction& direction) {
 }
 
 bool Engine::IsPlayerOnScreenEdge(const Direction& direction) {
+  const int kPlayerDiameterScale = 2;
   if (direction == Direction::kRight) {
     return (player->player_body->GetPosition().x >
-            Conversions::PointsToMeters(750));
+            Conversions::PointsToMeters(Conversions::kWindowWidth -
+            (player->kPlayerRadius * kPlayerDiameterScale)));
   } else {
     return (player->player_body->GetPosition().x <
-            Conversions::PointsToMeters(50));
+            Conversions::PointsToMeters(
+                player->kPlayerRadius * kPlayerDiameterScale));
   }
 }
 
-void Engine::Update() {
+void Engine::Update(const std::string& meteor_texture) {
   float timeStep = 1.0f / 60.0f;
   int32 velocityIterations = 8;
   int32 positionIterations = 3;
   world_->Step(timeStep, velocityIterations, positionIterations);
 
-  SetWave();
+  int num = static_cast<int>(std::floor(wave_timer.getSeconds()));
+  SetWave(num);
 
   if (meteor_timer.getSeconds() >= rate_of_meteor_drops) {
-    AddMeteor(current_wave);
+    AddMeteor(current_wave, meteor_texture);
     meteor_timer.stop();
     meteor_timer.start();
   }
@@ -152,9 +163,9 @@ void Engine::BeginContact( b2Contact* contact ) {
 
 void Engine::RemoveOffScreenMeteors() {
   float scaled_height =
-      Conversions::PointsToMeters(cinder::app::getWindowHeight());
+      Conversions::PointsToMeters(mylibrary::Conversions::kWindowHeight);
   float scaled_width =
-      Conversions::PointsToMeters(cinder::app::getWindowWidth());
+      Conversions::PointsToMeters(mylibrary::Conversions::kWindowWidth );
   const float meteor_radius = 0.2f;
 
   b2Body* node = world_->GetBodyList();
@@ -190,10 +201,9 @@ void Engine::RemoveOffScreenMeteors() {
 
 }
 
-void Engine::SetWave() {
-  int num = static_cast<int>(std::floor(wave_timer.getSeconds()));
+void Engine::SetWave(int seconds_passed) {
   const int wave_increments = 15;
-  switch (num / wave_increments) {
+  switch (seconds_passed / wave_increments) {
     case 0:
       rate_of_meteor_drops = 1;
       current_wave = mylibrary::Wave::kWaveOne;
@@ -229,5 +239,7 @@ void Engine::SetWave() {
       break;
   }
 }
+double Engine::GetRateOfMeteorDrops() const { return rate_of_meteor_drops; }
+bool Engine::GetIsBarrierMade() const { return is_barrier_made; }
 
 }  // namespace mylibrary

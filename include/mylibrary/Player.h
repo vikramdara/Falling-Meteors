@@ -26,15 +26,14 @@ class Player {
    */
   ~Player();
 
+  void SetPlayerTexture(const std::string& texture_file_path);
+
   /**
    * This is the body that all box2d mechanics will take place in.
    */
   b2Body* player_body;
 
-  /**
-   * This is the texture that the player will have in the game.
-   */
-  cinder::gl::TextureRef player_texture;
+  const cinder::gl::TextureRef& GetPlayerTexture() const;
 
   /**
    * Density of the player object
@@ -45,6 +44,12 @@ class Player {
    * Size of the player
    */
   const float kPlayerRadius = 25;
+
+ private:
+  /**
+   * This is the texture that the player will have in the game.
+   */
+  cinder::gl::TextureRef player_texture;
 
 };
 

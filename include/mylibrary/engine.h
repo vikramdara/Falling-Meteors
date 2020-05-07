@@ -37,13 +37,19 @@ class Engine : public b2ContactListener {
   /**
    * Update method updates the game by 1/60 of a second
    */
-  void Update();
+  void Update(const std::string& meteor_texture);
 
   /**
    * MovePlayer method moves the player in a direction. Won't do anything if the
    * player is trying to move offscreen.
    * @param direction is the direction the player will move
    */
+
+  /**
+   * This method sets the current wave depending on how much time has passed
+   */
+  void SetWave(int seconds_passed);
+
   void MovePlayer(const Direction& direction);
 
   /**
@@ -53,7 +59,10 @@ class Engine : public b2ContactListener {
   mylibrary::Player* GetPlayer();
   mylibrary::Barrier* GetBarrier();
   mylibrary::Wave GetWave();
+  b2World* GetWorld() const;
   bool GetIsGameOver();
+  double GetRateOfMeteorDrops() const;
+  bool GetIsBarrierMade() const;
 
  private:
 
@@ -62,7 +71,7 @@ class Engine : public b2ContactListener {
    * @param wave is the current wave we are in used to determine the starting
    * position of the meteor
    */
-  void AddMeteor(const mylibrary::Wave& wave);
+  void AddMeteor(const mylibrary::Wave& wave, const std::string& meteor_texture);
 
   /**
    * This is an overloaded box2d method for handling collisions. If a player
@@ -88,11 +97,6 @@ class Engine : public b2ContactListener {
   void RemoveOffScreenMeteors();
 
   /**
-   * This method sets the current wave depending on how much time has passed
-   */
-  void SetWave();
-
-  /**
    * This method checks to see if the player is on the edge of the screen and
    * player is trying to move in the direction that put it offscreen
    * @param direction Is the direction the player is trying to go to
@@ -105,6 +109,7 @@ class Engine : public b2ContactListener {
    */
   b2World* world_;
 
+ private:
   /**
    * This is the player of the game.
    */
@@ -152,6 +157,7 @@ class Engine : public b2ContactListener {
    */
   bool is_barrier_made;
 
+ private:
   /**
    * Boolean to see if the wave four timer has started. Used to make sure the
    * timer doesn't reset in every single class

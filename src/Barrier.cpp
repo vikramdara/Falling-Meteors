@@ -15,7 +15,7 @@ Barrier::Barrier(b2World* world) {
 
   cinder::vec2 pos = cinder::vec2(
       cinder::randFloat(
-          kBarrierWidth, cinder::app::getWindowWidth() - kBarrierWidth),
+          kBarrierWidth, mylibrary::Conversions::kWindowWidth  - kBarrierWidth),
           cinder::randFloat(
               kBarrierHeightUpperBound, kBarrierHeightLowerBound));
   cinder::vec2 posScaled = mylibrary::Conversions::PointsToMeters(pos);

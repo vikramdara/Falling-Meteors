@@ -7,14 +7,12 @@
 namespace mylibrary {
 
 Meteor::Meteor(b2World* world, const float kRadius, const mylibrary::Wave& kWave, double seconds) {
-  meteor_texture = cinder::gl::Texture::create(cinder::loadImage(cinder::app::loadAsset("transparent_meteor.png")));
-
   const float kCinderRadius = mylibrary::Conversions::MetersToPoints(kRadius);
   const float kPositionRange = 200;
   const float kVerticalPositionScale = 2;
 
   cinder::vec2 pos = cinder::vec2(cinder::randFloat(kPositionRange,
-      cinder::app::getWindowWidth() - kPositionRange),
+      mylibrary::Conversions::kWindowWidth - kPositionRange),
           cinder::randFloat( -kCinderRadius,
               -kPositionRange / kVerticalPositionScale));
   cinder::vec2 posScaled = Conversions::PointsToMeters(pos);
@@ -65,8 +63,8 @@ void Meteor::ChangeStartingPointOfMeteor(b2BodyDef& meteor,
 
   switch (static_cast<int>(std::floor(seconds) / kSecondsForPositionChange)) {
     case 0:
-      pos = cinder::vec2(cinder::randFloat(cinder::app::getWindowWidth() + kCinderRadius, cinder::app::getWindowWidth() + kCinderRadius * kScaleRadius),
-                         cinder::randFloat( 0, cinder::app::getWindowHeight() / kScaleWindow));
+      pos = cinder::vec2(cinder::randFloat(mylibrary::Conversions::kWindowWidth  + kCinderRadius, mylibrary::Conversions::kWindowWidth  + kCinderRadius * kScaleRadius),
+                         cinder::randFloat( 0, mylibrary::Conversions::kWindowHeight  / kScaleWindow));
       starting_position = Conversions::PointsToMeters(pos);
 
       velocity_minimum = -10;
@@ -77,7 +75,7 @@ void Meteor::ChangeStartingPointOfMeteor(b2BodyDef& meteor,
       return;
     case 2:
       pos = cinder::vec2(cinder::randFloat(-kCinderRadius * kScaleRadius, -kCinderRadius),
-                         cinder::randFloat( 0, cinder::app::getWindowHeight() / kScaleWindow));
+                         cinder::randFloat( 0, mylibrary::Conversions::kWindowHeight  / kScaleWindow));
       starting_position = Conversions::PointsToMeters(pos);
 
       velocity_minimum = 3;
@@ -85,6 +83,17 @@ void Meteor::ChangeStartingPointOfMeteor(b2BodyDef& meteor,
       meteor.linearVelocity = b2Vec2( cinder::randFloat(velocity_minimum, velocity_maximum), cinder::randFloat( 0, velocity_minimum) );
       break;
   }
+}
+
+void Meteor::SetMeteorTexture(const std::string& texture_file_path) {
+  meteor_texture = cinder::gl::Texture::create(
+      cinder::loadImage(
+          cinder::app::loadAsset(
+              texture_file_path)));
+}
+
+const cinder::gl::TextureRef& Meteor::GetMeteorTexture() const {
+  return meteor_texture;
 }
 
 }

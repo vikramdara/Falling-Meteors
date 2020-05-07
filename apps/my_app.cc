@@ -23,9 +23,12 @@ void MyApp::setup() {
       cinder::app::loadAsset(
           "gameover.mp3"));
   game_over_music = cinder::audio::Voice::create(game_over_file);
+
+  engine_.GetPlayer()->SetPlayerTexture("transparent_player.png");
 }
 
-void MyApp::update() { engine_.Update();
+void MyApp::update() {
+  engine_.Update("transparent_meteor.png");
 }
 
 void MyApp::draw() {
@@ -79,7 +82,7 @@ void MyApp::DrawMeteor(const mylibrary::Meteor& meteor) {
       meteor_vector.y + (meteor_radius *
       (mylibrary::Conversions::kMetersToPoints)));
 
-  cinder::gl::draw(meteor.meteor_texture, meteor_rect);
+  cinder::gl::draw(meteor.GetMeteorTexture(), meteor_rect);
 }
 
 void MyApp::DrawBarrier() {
@@ -113,7 +116,7 @@ void MyApp::DrawPlayer() {
                             position_vector.x + 25,
                             position_vector.y + 25);
 
-  cinder::gl::draw(player->player_texture, player_rect);
+  cinder::gl::draw(player->GetPlayerTexture(), player_rect);
 }
 
 void MyApp::DrawBackground() {

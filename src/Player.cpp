@@ -7,17 +7,15 @@
 namespace mylibrary {
 
 Player::Player(b2World* world) {
-  player_texture = cinder::gl::Texture::create(cinder::loadImage(
-      cinder::app::loadAsset("transparent_player.png")));
 
   const int kWindowScaling = 2;
 
   b2BodyDef user_body;
   user_body.type = b2_staticBody;
   user_body.position.Set(Conversions::PointsToMeters(
-                             cinder::app::getWindowWidth() / kWindowScaling),
+      mylibrary::Conversions::kWindowWidth  / kWindowScaling),
                          Conversions::PointsToMeters(
-                             cinder::app::getWindowHeight() - kPlayerRadius));
+                             mylibrary::Conversions::kWindowHeight  - kPlayerRadius));
 
   player_body = world->CreateBody(&user_body);
 
@@ -31,4 +29,13 @@ Player::Player(b2World* world) {
 
 Player::~Player() = default;
 
+void Player::SetPlayerTexture(const std::string& texture_file_path) {
+  player_texture = cinder::gl::Texture::create(cinder::loadImage(
+      cinder::app::loadAsset(texture_file_path)));
 }
+const cinder::gl::TextureRef& Player::GetPlayerTexture() const {
+  return player_texture;
+}
+
+}
+

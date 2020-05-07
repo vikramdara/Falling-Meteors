@@ -30,15 +30,15 @@ class Meteor {
       const mylibrary::Wave& wave,
       double seconds);
 
+  void SetMeteorTexture(const std::string& texture_file_path);
+
+
   /**
    * This is the body that all box2d mechanics will take place in.
    */
   b2Body* meteor_body;
 
-  /**
-   * This is the texture that the meteor will have in the game.
-   */
-  cinder::gl::TextureRef meteor_texture;
+  const cinder::gl::TextureRef& GetMeteorTexture() const;
 
  private:
   /**
@@ -58,6 +58,11 @@ class Meteor {
       double seconds,
       cinder::vec2& starting_position,
       float kCinderRadius);
+
+  /**
+   * This is the texture that the meteor will have in the game.
+   */
+  cinder::gl::TextureRef meteor_texture;
 };
 
 }

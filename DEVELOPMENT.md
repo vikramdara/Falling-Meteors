@@ -44,4 +44,6 @@ ridiculous errors regarding constants.
 **5/6/2020** Finally finished mechanics of the game and fixed bugs. I also added texture refs and music
 to make the game a lot more appealing.
 
+**5/6/2020** Refactors some code to make it more testable. Added tests
+
 **5/6/2020** Finished ReadMe.md

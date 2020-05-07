@@ -33,12 +33,12 @@ layout.
     
 * Box2D is a library also used in this game, luckily implementing that is really easy
     * Cinder has some convenient macros to help us out
-    * Go the the CMakeLists.txt files and find the ci_make_xxx macros
+    * Go the the CMakeLists.txt files and find the ci_make_xxx macros and type in Box2D
        
-        - ci_make_app(
-              APP_NAME    cinder-myapp
-              CINDER_PATH ${CINDER_PATH}
-              SOURCES     ${SOURCE_LIST}
-              LIBRARIES   mylibrary
-              BLOCKS Box2D <------ Just type this in here!
-          )
+    ```ci_make_app(
+           APP_NAME    cinder-myapp
+           CINDER_PATH ${CINDER_PATH}
+           SOURCES     ${SOURCE_LIST}
+           LIBRARIES   mylibrary
+           BLOCKS Box2D <------ Just type this!
+       )
